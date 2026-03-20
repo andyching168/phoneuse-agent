@@ -1,0 +1,370 @@
+{
+  "base_resolution": [
+    1080,
+    2220
+  ],
+  "states": [
+    {
+      "name": "首頁",
+      "description": "有時會有廣告，把他打叉就好,你能看到\"免運當日\"代表你在首頁,要看貨況的話點「我的」",
+      "image_path": "shopee_images/01_首頁_2.png",
+      "markers": [
+        {
+          "name": "廣告叉叉",
+          "x": 805,
+          "y": 697,
+          "type": "tap"
+        },
+        {
+          "name": "首頁",
+          "x": 112,
+          "y": 2100,
+          "type": "tap",
+          "target_state": "首頁"
+        },
+        {
+          "name": "通知",
+          "x": 746,
+          "y": 2112,
+          "type": "tap",
+          "target_state": "通知"
+        },
+        {
+          "name": "我的",
+          "x": 991,
+          "y": 2112,
+          "type": "tap",
+          "target_state": "我的"
+        },
+        {
+          "name": "搜尋",
+          "x": 288,
+          "y": 88,
+          "type": "tap"
+        }
+      ]
+    },
+    {
+      "name": "通知",
+      "description": "基本上你在這頁可以看到2則訂單的最新通知",
+      "image_path": "shopee_images/02_通知_2.png",
+      "markers": [
+        {
+          "name": "首頁",
+          "x": 112,
+          "y": 2100,
+          "type": "tap",
+          "target_state": "首頁"
+        },
+        {
+          "name": "通知",
+          "x": 746,
+          "y": 2112,
+          "type": "tap",
+          "target_state": "通知"
+        },
+        {
+          "name": "我的",
+          "x": 991,
+          "y": 2112,
+          "type": "tap",
+          "target_state": "我的"
+        }
+      ]
+    },
+    {
+      "name": "我的",
+      "description": "你不知道先點哪個的話，可以先點待付款，切到裡面還有辦法點其他的",
+      "image_path": "shopee_images/03_我的_2.png",
+      "markers": [
+        {
+          "name": "首頁",
+          "x": 112,
+          "y": 2100,
+          "type": "tap",
+          "target_state": "首頁"
+        },
+        {
+          "name": "通知",
+          "x": 746,
+          "y": 2112,
+          "type": "tap",
+          "target_state": "通知"
+        },
+        {
+          "name": "我的",
+          "x": 991,
+          "y": 2112,
+          "type": "tap",
+          "target_state": "我的"
+        },
+        {
+          "name": "待付款",
+          "x": 141,
+          "y": 417,
+          "type": "tap",
+          "target_state": "購買清單：待付款"
+        },
+        {
+          "name": "待出貨",
+          "x": 420,
+          "y": 399,
+          "type": "tap",
+          "target_state": "購買清單：待出貨"
+        },
+        {
+          "name": "待收貨",
+          "x": 684,
+          "y": 415,
+          "type": "tap",
+          "target_state": "購買清單：待收貨"
+        }
+      ]
+    },
+    {
+      "name": "購買清單：待付款",
+      "description": "這邊除了標定點標的元素之外，你用hierarchy去辨認後再使用click座標是沒問題的",
+      "image_path": "shopee_images/04_購買清單：待付款_2.png",
+      "markers": [
+        {
+          "name": "全部",
+          "x": 69,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：全部"
+        },
+        {
+          "name": "待付款",
+          "x": 182,
+          "y": 162,
+          "type": "tap",
+          "target_state": "購買清單：待付款"
+        },
+        {
+          "name": "待出貨",
+          "x": 281,
+          "y": 152,
+          "type": "tap",
+          "target_state": "購買清單：待出貨"
+        },
+        {
+          "name": "待收貨",
+          "x": 393,
+          "y": 155,
+          "type": "tap",
+          "target_state": "購買清單：待收貨"
+        },
+        {
+          "name": "訂單已完成",
+          "x": 515,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：訂單已完成"
+        },
+        {
+          "name": "返回",
+          "x": 56,
+          "y": 86,
+          "type": "tap",
+          "target_state": "我的"
+        }
+      ]
+    },
+    {
+      "name": "購買清單：全部",
+      "description": "這邊除了標定點標的元素之外，你用hierarchy去辨認後再使用click座標是沒問題的",
+      "image_path": "shopee_images/05_購買清單：全部_2.png",
+      "markers": [
+        {
+          "name": "全部",
+          "x": 69,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：全部"
+        },
+        {
+          "name": "待付款",
+          "x": 182,
+          "y": 162,
+          "type": "tap",
+          "target_state": "購買清單：待付款"
+        },
+        {
+          "name": "待出貨",
+          "x": 281,
+          "y": 152,
+          "type": "tap",
+          "target_state": "購買清單：待出貨"
+        },
+        {
+          "name": "待收貨",
+          "x": 393,
+          "y": 155,
+          "type": "tap",
+          "target_state": "購買清單：待收貨"
+        },
+        {
+          "name": "訂單已完成",
+          "x": 515,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：訂單已完成"
+        },
+        {
+          "name": "返回",
+          "x": 56,
+          "y": 86,
+          "type": "tap",
+          "target_state": "我的"
+        }
+      ]
+    },
+    {
+      "name": "購買清單：待出貨",
+      "description": "這邊除了標定點標的元素之外，你用hierarchy去辨認後再使用click座標是沒問題的",
+      "image_path": "shopee_images/06_購買清單：待出貨_2.png",
+      "markers": [
+        {
+          "name": "全部",
+          "x": 69,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：全部"
+        },
+        {
+          "name": "待付款",
+          "x": 182,
+          "y": 162,
+          "type": "tap",
+          "target_state": "購買清單：待付款"
+        },
+        {
+          "name": "待出貨",
+          "x": 281,
+          "y": 152,
+          "type": "tap",
+          "target_state": "購買清單：待出貨"
+        },
+        {
+          "name": "待收貨",
+          "x": 393,
+          "y": 155,
+          "type": "tap",
+          "target_state": "購買清單：待收貨"
+        },
+        {
+          "name": "訂單已完成",
+          "x": 515,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：訂單已完成"
+        },
+        {
+          "name": "返回",
+          "x": 56,
+          "y": 86,
+          "type": "tap",
+          "target_state": "我的"
+        }
+      ]
+    },
+    {
+      "name": "購買清單：待收貨",
+      "description": "這邊除了標定點標的元素之外，你用hierarchy去辨認後再使用click座標是沒問題的",
+      "image_path": "shopee_images/07_購買清單：待收貨_2.png",
+      "markers": [
+        {
+          "name": "全部",
+          "x": 69,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：全部"
+        },
+        {
+          "name": "待付款",
+          "x": 182,
+          "y": 162,
+          "type": "tap",
+          "target_state": "購買清單：待付款"
+        },
+        {
+          "name": "待出貨",
+          "x": 281,
+          "y": 152,
+          "type": "tap",
+          "target_state": "購買清單：待出貨"
+        },
+        {
+          "name": "待收貨",
+          "x": 393,
+          "y": 155,
+          "type": "tap",
+          "target_state": "購買清單：待收貨"
+        },
+        {
+          "name": "訂單已完成",
+          "x": 515,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：訂單已完成"
+        },
+        {
+          "name": "返回",
+          "x": 56,
+          "y": 86,
+          "type": "tap",
+          "target_state": "我的"
+        }
+      ]
+    },
+    {
+      "name": "購買清單：訂單已完成",
+      "description": "這邊除了標定點標的元素之外，你用hierarchy去辨認後再使用click座標是沒問題的",
+      "image_path": "shopee_images/08_購買清單：訂單已完成_2.png",
+      "markers": [
+        {
+          "name": "全部",
+          "x": 69,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：全部"
+        },
+        {
+          "name": "待付款",
+          "x": 182,
+          "y": 162,
+          "type": "tap",
+          "target_state": "購買清單：待付款"
+        },
+        {
+          "name": "待出貨",
+          "x": 281,
+          "y": 152,
+          "type": "tap",
+          "target_state": "購買清單：待出貨"
+        },
+        {
+          "name": "待收貨",
+          "x": 393,
+          "y": 155,
+          "type": "tap",
+          "target_state": "購買清單：待收貨"
+        },
+        {
+          "name": "訂單已完成",
+          "x": 515,
+          "y": 145,
+          "type": "tap",
+          "target_state": "購買清單：訂單已完成"
+        },
+        {
+          "name": "返回",
+          "x": 56,
+          "y": 86,
+          "type": "tap",
+          "target_state": "我的"
+        }
+      ]
+    }
+  ]
+}
