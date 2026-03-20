@@ -4,6 +4,48 @@
 
 ---
 
+## 模型權重下載
+
+本專案使用 OmniParser 作為視覺解析引擎，需要下載以下模型權重：
+
+### 1. OmniParser 模型（ICON 偵測 + 圖片描述）
+
+```bash
+cd OmniParser
+
+# 建立 weights 目錄
+mkdir -p weights
+
+# 下載 V2 模型
+for f in icon_detect/{train_args.yaml,model.pt,model.yaml} icon_caption/{config.json,generation_config.json,model.safetensors}; do
+    huggingface-cli download microsoft/OmniParser-v2.0 "$f" --local-dir weights
+done
+
+# 重新命名資料夾（程式碼預設名稱）
+mv weights/icon_caption weights/icon_caption_florence
+```
+
+### 2. GLM-OCR 模型（可選，本機 OCR）
+
+請參考 [OmniParser/GLM-OCR-USAGE.md](OmniParser/GLM-OCR-USAGE.md)
+
+### 3. 權重資料夾結構
+
+```
+OmniParser/weights/
+├── icon_detect/
+│   ├── model.pt
+│   ├── model.yaml
+│   └── train_args.yaml
+└── icon_caption_florence/
+    ├── config.json
+    ├── generation_config.json
+    ├── model.safetensors
+    └── ...
+```
+
+---
+
 ## 功能特色
 
 ### 🎯 螢幕標記工具 (TaggingTool)
@@ -224,3 +266,54 @@ PhoneUse/
 - 使用 `.env` 檔案管理敏感資訊
 - `.env` 已在 `.gitignore` 中排除
 - 參考 `.env.example` 建立你的 `.env`
+
+---
+
+## OmniParser 致謝與授權
+
+本專案內嵌了 [Microsoft OmniParser](https://github.com/microsoft/OmniParser) 作為視覺解析引擎。
+
+### 模型授權
+
+| 模型 | 授權條款 |
+|------|----------|
+| `icon_detect`（ICON 偵測模型） | AGPL |
+| `icon_caption_blip2` & `icon_caption_florence`（圖片描述模型） | MIT |
+
+詳細授權資訊請參考：
+- [OmniParser/LICENSE](OmniParser/LICENSE)
+- [OmniParser 官方模型頁面](https://huggingface.co/microsoft/OmniParser)
+
+### 本專案魔改項目
+
+本專案對 OmniParser 進行了以下客製化修改：
+
+1. **簡化相依性**：移除不必要的 Azure 雲端服務依賴
+2. **整合進 screen overview 管線**：與 GLM-OCR、Gemini 串聯成完整流程
+3. **支援本機部署**：可直接使用本地 OCR 服務
+4. **JSON 標記格式**：與 TaggingTool 整合，支援狀態機制
+
+### 引用 OmniParser
+
+如果您在學術研究中使用了 OmniParser，請引用原文：
+
+```bibtex
+@misc{lu2024omniparserpurevisionbased,
+      title={OmniParser for Pure Vision Based GUI Agent},
+      author={Yadong Lu and Jianwei Yang and Yelong Shen and Ahmed Awadallah},
+      year={2024},
+      eprint={2408.00203},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2408.00203},
+}
+```
+
+---
+
+## 參考連結
+
+- [OmniParser 原始論文 (arXiv)](https://arxiv.org/abs/2408.00203)
+- [OmniParser GitHub](https://github.com/microsoft/OmniParser)
+- [OmniParser V2 模型 (HuggingFace)](https://huggingface.co/microsoft/OmniParser-v2.0)
+- [OmniParser V1.5 模型 (HuggingFace)](https://huggingface.co/microsoft/OmniParser)
