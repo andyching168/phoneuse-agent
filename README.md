@@ -10,8 +10,11 @@
 
 | 方案 | 成本 | 速度 | 準確度 | 需求 |
 |------|------|------|--------|------|
-| **本地 OCR + OmniParser** | ⭐ 免費 | ⚡ 快 | ✅ 高 | GPU 建議（CPU 可跑） |
-| **OCR + Full 管線** | ⭐ 免費 | ⚡ 中 | ✅ 非常高 | 需要 Gemini API Key |
+| **本地 OCR** | ⭐ 免費 | ⚡ 快 | ✅ 高 | GLM-OCR 本機服務 |
+| **phone_hierarchy** | ⭐ 免費 | ⚡ 快 | ⚠️ 中 | Android uiautomator2 |
+| **本地 OCR + 預先標注json** | ⭐ 免費 | ⚡ 快 | ✅ 高 | TaggingTool 預先標注 |
+| **phone_annotate** | ⭐ 免費 | ⚡ 中 | ✅ 高 | Gemini API Key |
+| **Full 管線** | ⭐ 免費 | ⚡ 慢 | ✅ 非常高 | Gemini API Key + GLM-OCR |
 
 ### 為什麼選擇本地方案？
 
