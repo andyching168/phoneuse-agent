@@ -10,18 +10,49 @@
 
 | 方案 | 成本 | 速度 | 準確度 | 需求 |
 |------|------|------|--------|------|
-| **本地 OCR** | ⭐ 免費 | ⚡ 快 | ✅ 高 | GLM-OCR 本機服務 |
 | **phone_hierarchy** | ⭐ 免費 | ⚡ 快 | ⚠️ 中（僅結構文字） | Android uiautomator2（不適合遊戲/複雜 App） |
 | **本地 OCR + 預先標注json** | ⭐ 免費 | ⚡ 快 | ✅ 高 | TaggingTool 預先標注 |
 | **phone_annotate** | 💰 需要 API Key | ⚡ 中 | ✅ 高 | Gemini API Key |
-| **Full 管線** | 💰 需要 API Key | ⚡ 慢 | ✅ 非常高 | Gemini API Key + GLM-OCR |
+| **Full 混合管線** | 💰 需要 API Key | ⚡ 慢 | ✅ 非常高 | Gemini API Key + GLM-OCR |
 
-### 為什麼選擇本地方案？
+### 為什麼選擇 Full 混合方案？
 
-- ✅ **零 API 費用**：OCR 全程本地運行
-- ✅ **離線可用**：無需網路連線
-- ✅ **隱私安全**：截圖不上傳到第三方
-- ✅ **精準可靠**：結合 OmniParser + GLM-OCR + Gemini，準確度媲美商業方案
+三種工具各有缺陷，混合方案互相彌補：
+
+| 工具 | 單獨使用時的缺陷 |
+|------|-----------------|
+| **phone_hierarchy** | 只能取得結構文字，**遊戲/複雜 App（如蝦皮）幾乎無法使用** |
+| **GLM-OCR** | 只能辨識文字，**不知道哪裡是可點擊的按鈕** |
+| **OmniParser** | 只能偵測元素位置與簡單描述，**細節文字辨識容易出錯** |
+
+**Full 混合管線如何解決：**
+
+```
+步驟 1：OmniParser 偵測互動元素
+├── ✅ 找出畫面中所有按鈕、圖示、輸入框位置（bbox）
+├── ✅ Florence2 初步描述每個元素
+└── ❌ 但細節文字可能錯漏（如價格數字、特殊符號）
+
+步驟 2：GLM-OCR 區域文字辨識
+├── ✅ 對每個偵測到的區域，精準 OCR 辨識內含文字
+├── ✅ 處理複雜字型、符號、模糊文字
+└── ❌ 但不知道這個元素是什麼（只知道這裡有文字）
+
+步驟 3：Gemini AI 整合精煉
+├── ✅ 整合 OmniParser 的結構 + GLM-OCR 的精準文字
+├── ✅ 統一輸出格式，給出每個元素的明確標籤
+└── ✅ 最終輸出：pixel bbox + 統一描述 + type
+
+輸出結果：
+icon 0: {type: button, content: "確認購買 $49.90", bbox: [120, 540, 360, 600]}
+icon 1: {type: icon_button, content: "返回上一頁", bbox: [30, 30, 90, 90]}
+```
+
+**結果：**
+- ✅ **零 API 費用**（GLM-OCR 本地運行，Gemini 用量極少）
+- ✅ **離線可用**（OmniParser + GLM-OCR 全程本地）
+- ✅ **隱私安全**（截圖不上傳）
+- ✅ **高精準度**（三工具互補，戰勝各自缺陷）
 - ✅ **可自訂**：完全開源，可根據需求修改
 
 ### 最低需求
@@ -136,7 +167,7 @@ phoneuse.py screen_overview --provider ocr
 ```
 直接將截圖送往 GLM-OCR 本機伺服器，取得畫面文字內容。
 
-#### Full 管線（詳細）
+#### Full 混合管線（詳細）
 ```
 phoneuse.py screen_overview --provider full
 ```
