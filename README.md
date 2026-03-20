@@ -44,16 +44,16 @@ GLM-OCR 模型會在首次執行時自動下載，無需手動下載。
 
 ```bash
 # 啟動伺服器（預設 port 8765）
-python ocr_server.py
+uvicorn ocrServer:app --host 0.0.0.0 --port 8765
 
-# 或指定 port
-python ocr_server.py --port 8080
+# 或指定不同 port
+uvicorn ocrServer:app --host 0.0.0.0 --port 8080
 ```
 
 伺服器啟動後會顯示：
 ```
 Model ready!
-INFO:     Uvicorn running on http://127.0.0.1:8765
+INFO:     Uvicorn running on http://0.0.0.0:8765
 ```
 
 #### API 使用方式
