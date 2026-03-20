@@ -25,9 +25,47 @@ done
 mv weights/icon_caption weights/icon_caption_florence
 ```
 
-### 2. GLM-OCR 模型（可選，本機 OCR）
+### 2. GLM-OCR 模型（用於 ocr_server.py）
 
-請參考 [OmniParser/GLM-OCR-USAGE.md](OmniParser/GLM-OCR-USAGE.md)
+本專案的 `ocr_server.py` 提供基於 GLM-OCR 的本地 OCR 服務。
+
+#### 前置需求
+
+```bash
+# 安裝 transformers（用于 GLM-OCR 模型）
+pip install transformers>=4.30
+```
+
+#### 模型下載
+
+GLM-OCR 模型會在首次執行時自動下載，無需手動下載。
+
+#### 啟動 OCR 伺服器
+
+```bash
+# 啟動伺服器（預設 port 8765）
+python ocr_server.py
+
+# 或指定 port
+python ocr_server.py --port 8080
+```
+
+伺服器啟動後會顯示：
+```
+Model ready!
+INFO:     Uvicorn running on http://127.0.0.1:8765
+```
+
+#### API 使用方式
+
+```bash
+# 直接呼叫
+curl -X POST http://127.0.0.1:8765/ocr \
+  -H "Content-Type: application/json" \
+  -d '{"image_b64": "base64編碼的圖片"}'
+```
+
+詳細說明請參考 [OmniParser/GLM-OCR-USAGE.md](OmniParser/GLM-OCR-USAGE.md)
 
 ### 3. 權重資料夾結構
 
