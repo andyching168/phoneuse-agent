@@ -4,6 +4,31 @@
 
 ---
 
+## 🎯 特色：低成本本地部署，高準確度
+
+本專案設計為**可在本地低成本運行**的自動化框架：
+
+| 方案 | 成本 | 速度 | 準確度 | 需求 |
+|------|------|------|--------|------|
+| **本地 OCR + OmniParser** | ⭐ 免費 | ⚡ 快 | ✅ 高 | GPU 建議（CPU 可跑） |
+| **OCR + Full 管線** | ⭐ 免費 | ⚡ 中 | ✅ 非常高 | 需要 Gemini API Key |
+
+### 為什麼選擇本地方案？
+
+- ✅ **零 API 費用**：OCR 全程本地運行
+- ✅ **離線可用**：無需網路連線
+- ✅ **隱私安全**：截圖不上傳到第三方
+- ✅ **精準可靠**：結合 OmniParser + GLM-OCR + Gemini，準確度媲美商業方案
+- ✅ **可自訂**：完全開源，可根據需求修改
+
+### 最低需求
+
+- Python 3.10+
+- 4GB RAM（建議 8GB+）
+- GPU（建議 NVIDIA，CUDA 支援）—— 無 GPU 也可運行，速度較慢
+
+---
+
 ## 模型權重下載
 
 本專案使用 OmniParser 作為視覺解析引擎，需要下載以下模型權重：
@@ -273,14 +298,14 @@ python phoneuse.py run_marker_follow "首頁" "開始遊戲按鈕" --json marker
 PhoneUse/
 ├── main.py              # TaggingTool GUI 工具
 ├── phoneuse.py          # CLI 主程式
-├── ocr_server.py        # OCR 伺服器
-├── markers.json          # 標記檔案
+├── ocrServer.py        # OCR 伺服器
+├── markers.json          # 範例標記檔案
 ├── screenshot/          # 截圖存放
 ├── images/              # TaggingTool 管理的圖片
 ├── OmniParser/          # OmniParser 模型
-├── session_3095/        # 範例 session 資料
 ├── .env                 # 環境變數（不上傳）
 ├── .env.example         # 環境變數範本
+├── SKILL.md             # 給Agent看的說明
 └── requirements.txt
 ```
 
