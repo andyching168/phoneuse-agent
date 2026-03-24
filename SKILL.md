@@ -127,15 +127,23 @@ python phoneuse.py run_marker_follow "主頁" "任務" --json shopee.json
 ```
 
 ### phone_screen_overview
-使用 本地模型大致描述目前畫面。
+使用本地 OCR 模型快速描述目前畫面（普通模式）。
 ```bash
 python phoneuse.py screen_overview 
 ```
-遇到複雜畫面，用full取得包含確切座標和元素解讀的資訊
-使用 本地模型大致描述目前畫面。
+
+**--provider full（超詳細模式）**  
+使用 OmniParser + GLM-OCR + Gemini，提供每個 UI 元素的：
+- 精確座標 (`bbox`, `bbox_ratio`)
+- 文字內容 (`content`)
+- 是否可互動 (`interactivity`)
+- 圖示語意標籤 (`icon_label`，如 `expense`、`Food`、`Motorcycle Refueling`)
+
 ```bash
-python phoneuse.py screen_overview --full
+python phoneuse.py screen_overview --provider full
 ```
+
+> ⚠️ full 模式需要 `omni` conda 環境才能正常載入 OmniParser。
 
 ## Usage Pattern
 
