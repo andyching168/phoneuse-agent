@@ -169,12 +169,14 @@ USE_LOCAL_GLM_OCR=false python phoneuse.py screen_overview --provider api
 
 > ⚠️ **重要限制**：Z.AI GLM-OCR API 在遇到**手機遊戲畫面**時，可能會把整個遊戲畫面當成圖片處理，導致無法正確辨識遊戲內的文字。若需要自動化遊戲，建議使用 `--provider full` 或純 `markers.json` 方案。
 
-### --provider full（超詳細模式）⚠️ 需要 Z.AI API
-使用 OmniParser + GLM-OCR + Gemini，提供每個 UI 元素的：
+### --provider full（超詳細模式）⚠️ 需要 Z.AI API + Ollama Cloud
+使用 OmniParser + GLM-OCR + Qwen3.5 (Ollama Cloud)，提供每個 UI 元素的：
 - 精確座標 (`bbox`, `bbox_ratio`)
 - 文字內容 (`content`)
 - 是否可互動 (`interactivity`)
 - 圖示語意標籤 (`icon_label`)
+
+**更新 (2026-03-26)**：原本使用 Gemini 做 refine，現在改用 Ollama Cloud Qwen3.5（免費額度夠用，效果也很好）。
 
 ```bash
 USE_LOCAL_GLM_OCR=false python phoneuse.py screen_overview --provider full
