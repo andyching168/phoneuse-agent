@@ -35,6 +35,9 @@ DEFAULT_SCREEN_OVERVIEW_PROVIDER = os.environ.get("DEFAULT_SCREEN_OVERVIEW_PROVI
 DEFAULT_OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 DEFAULT_GLM_OCR_SERVER_URL = os.environ.get("GLM_OCR_SERVER_URL", "http://192.168.0.212:8765/ocr")
 DEFAULT_GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+# Refine 環節的模型選擇：gemini 或 ollama，預設 gemini
+DEFAULT_REFINE_PROVIDER = os.environ.get("REFINE_PROVIDER", "gemini").lower()
+DEFAULT_REFINE_OLLAMA_MODEL = os.environ.get("REFINE_OLLAMA_MODEL", "qwen3.5:cloud")
 
 # Z.AI MaaS API (預設使用這個!)
 # 重要：API Key 請透過環境變數或 .env 設定，切勿寫在 code 裡！
@@ -425,9 +428,11 @@ def full_screen_overview_pipeline(
     image_base64: str,
     glm_ocr_url: str = DEFAULT_GLM_OCR_SERVER_URL,
     gemini_model: str = DEFAULT_GEMINI_MODEL,
+    refine_provider: str = DEFAULT_REFINE_PROVIDER,
+    refine_ollama_model: str = DEFAULT_REFINE_OLLAMA_MODEL,
     verbose: bool = False,
 ) -> str:
-    """Full pipeline: OmniParser -> GLM-OCR per box -> Gemini refine per box -> pixel bbox output."""
+    """Full pipeline: OmniParser -> GLM-OCR per box -> refine per box (Gemini or Ollama) -> pixel bbox output."""
     parser = _get_omniparser_instance(verbose=verbose)
     with _suppress_output(enabled=not verbose):
         _, parsed_content_list = parser.parse(image_base64)
@@ -455,8 +460,11 @@ def full_screen_overview_pipeline(
         except Exception:
             continue
 
-    # Step 2: Gemini refine on each box
-    if GEMINI_API_KEY:
+    # Step 2: refine on each box (Gemini or Ollama)
+    use_gemini = refine_provider == "gemini" and GEMINI_API_KEY
+    use_ollama = refine_provider == "ollama"
+
+    if use_gemini:
         endpoint = (
             f"https://generativelanguage.googleapis.com/v1beta/models/"
             f"{gemini_model}:generateContent?key={GEMINI_API_KEY}"
@@ -507,6 +515,42 @@ def full_screen_overview_pipeline(
                 if refined:
                     item["content"] = refined
                     item["source"] = "gemini_refined"
+                if icon_label:
+                    item["icon_label"] = icon_label
+            except Exception:
+                continue
+
+    if use_ollama:
+        instruction = (
+            "You are a strict UI element recognizer. "
+            "Return exactly one line JSON: "
+            "{\"refined_content\":\"...\",\"icon_label\":\"...\"}."
+        )
+
+        for idx, item in enumerate(parsed_content_list):
+            bbox = item.get("bbox")
+            if not isinstance(bbox, list) or len(bbox) != 4:
+                continue
+            crop_b64 = _crop_to_base64(image, bbox)
+            if not crop_b64:
+                continue
+
+            content = _clean_llm_text(str(item.get("content") or ""))
+            prompt = (
+                f"{instruction}\n"
+                f"box_id={idx}\n"
+                f"type={item.get('type', 'unknown')}\n"
+                f"existing_content={content}\n"
+                "Refine this UI element."
+            )
+
+            try:
+                out = ollama_chat(model=refine_ollama_model, prompt=prompt, image_base64=crop_b64, timeout=120)
+                refined = _extract_json_field(out, "refined_content") or _clean_llm_text(out)
+                icon_label = _extract_json_field(out, "icon_label")
+                if refined:
+                    item["content"] = refined
+                    item["source"] = "ollama_refined"
                 if icon_label:
                     item["icon_label"] = icon_label
             except Exception:
@@ -680,14 +724,14 @@ def cmd_screen_overview(
     Screen overview with three modes:
     - "ocr": Uses local GLM-OCR server (DEFAULT)
     - "api": Uses Z.AI MaaS GLM-OCR API directly (set USE_LOCAL_GLM_OCR=false to switch)
-    - "full": Full pipeline with OmniParser + GLM-OCR per box + Gemini refine (detailed)
+    - "full": Full pipeline with OmniParser + GLM-OCR per box + refine (Gemini or Ollama, see REFINE_PROVIDER)
     
     預設使用本地模型，若要使用 Z.AI API 請設環境變數 USE_LOCAL_GLM_OCR=false
     """
-    # 根據 USE_LOCAL_GLM_OCR 環境變數決定預設 provider
-    # 預設使用本地模型（USE_LOCAL_GLM_OCR 預設 true）
-    # 若要使用 Z.AI API，設 USE_LOCAL_GLM_OCR=false
-    provider = "ocr" if USE_LOCAL_GLM_OCR else "api"
+    # 根據 USE_LOCAL_GLM_OCR 環境變數決定預設：api/ocr 使用本地或雲端
+    # full 模式不受此影響
+    if provider in ("api", "ocr"):
+        provider = "ocr" if USE_LOCAL_GLM_OCR else "api"
     
     provider_norm = (provider or "").strip().lower()
     if provider_norm not in ["api", "ocr", "full"]:

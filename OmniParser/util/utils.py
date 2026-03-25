@@ -20,7 +20,6 @@ import cv2
 import numpy as np
 # %matplotlib inline
 import easyocr
-from paddleocr import PaddleOCR
 
 # GLM-OCR for better text recognition
 from transformers import AutoProcessor, AutoModelForImageTextToText
@@ -28,14 +27,6 @@ import torch
 import requests
 
 reader = easyocr.Reader(['en'])
-paddle_ocr = PaddleOCR(
-    lang='en',  # other lang also available
-    use_angle_cls=False,
-    use_gpu=False,  # using cuda will conflict with pytorch in the same process
-    max_batch_size=1024,
-    use_dilation=True,  # improves accuracy
-    det_db_score_mode='slow',  # improves accuracy
-    rec_batch_num=1024)
 
 # GLM-OCR model initialization (lazy loading)
 glm_processor = None
@@ -546,13 +537,15 @@ def get_caption_model_processor(model_name, model_name_or_path="Salesforce/blip2
             model_name_or_path, device_map=None, torch_dtype=torch.float16
         ).to(device)
     elif model_name == "florence2":
-        from transformers import AutoProcessor, AutoModelForCausalLM 
+        from transformers import AutoProcessor, AutoModelForCausalLM
         processor = AutoProcessor.from_pretrained("microsoft/Florence-2-base", trust_remote_code=True)
-        if device == 'cpu':
-            model = AutoModelForCausalLM.from_pretrained(model_name_or_path, torch_dtype=torch.float32, trust_remote_code=True)
-        else:
-            model = AutoModelForCausalLM.from_pretrained(model_name_or_path, torch_dtype=torch.float16, trust_remote_code=True).to(device)
-    return {'model': model.to(device), 'processor': processor}
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name_or_path, 
+            torch_dtype=torch.float32, 
+            trust_remote_code=True,
+            device_map=device,
+        )
+    return {'model': model, 'processor': processor}
 
 
 def get_yolo_model(model_path):
@@ -595,7 +588,7 @@ def get_parsed_content_icon(filtered_boxes, starting_idx, image_source, caption_
         batch = croped_pil_image[i:i+batch_size]
         t1 = time.time()
         if model.device.type == 'cuda':
-            inputs = processor(images=batch, text=[prompt]*len(batch), return_tensors="pt", do_resize=False).to(device=device, dtype=torch.float16)
+            inputs = processor(images=batch, text=[prompt]*len(batch), return_tensors="pt", do_resize=False).to(device=device, dtype=torch.float32)
         else:
             inputs = processor(images=batch, text=[prompt]*len(batch), return_tensors="pt").to(device=device)
         if 'florence' in model.config.name_or_path:
