@@ -12,7 +12,8 @@
 |------|------|------|--------|------|
 | **phone_hierarchy** | ⭐ 免費 | ⚡ 快 | ⚠️ 中（僅結構文字） | Android uiautomator2（不適合遊戲/複雜 App） |
 | **本地 OCR + 預先標注json** | ⭐ 免費 | ⚡ 快 | ✅ 高 | TaggingTool 預先標注 |
-| **screen_overview (預設)** | 💰 Z.AI API | ⚡ 快 | ✅ 高 | Z.AI API Key |
+| **screen_overview (預設)** | ⭐ 免費（本地） | ⚡ 快 | ✅ 高 | 本地 GLM-OCR Server |
+| **screen_overview --provider api** | 💰 Z.AI API | ⚡ 快 | ✅ 高（有BBox） | Z.AI API Key |
 | **screen_overview full** | 💰 Z.AI API | ⚡ 慢 | ✅ 非常高 | Z.AI API Key + OmniParser |
 | **phone_annotate** | 💰 Gemini API | ⚡ 中 | ✅ 高 | Gemini API Key |
 
@@ -23,8 +24,8 @@
 | 工具 | 單獨使用時的缺陷 |
 |------|-----------------|
 | **phone_hierarchy** | 只能取得結構文字，**遊戲/複雜 App（如蝦皮）幾乎無法使用** |
-| **Z.AI GLM-OCR API** | 只能辨識文字 + BBox，**不知道哪裡是可點擊的按鈕** |
-| **本地 GLM-OCR** | 只能辨識文字，**不知道哪裡是可點擊的按鈕** |
+| **本地 GLM-OCR（預設）** | 只能辨識純文字，**無 BBox 座標，無法自動化** |
+| **Z.AI GLM-OCR API** | 有 BBox，但**遇到遊戲畫面時會把整個畫面當成圖片**，失去文字辨識能力 |
 | **OmniParser** | 只能偵測元素位置與簡單描述，**細節文字辨識,元素種類容易出錯** |
 | **Gemini** |單獨使用Gemini 3 Flash,**多輪後成本可觀**|
 
@@ -52,7 +53,8 @@ icon 1: {type: icon_button, content: "返回上一頁", bbox: [30, 30, 90, 90]}
 ```
 
 **結果：**
-- ✅ **極少 API 費用**（GLM-OCR 本地運行或 Z.AI API，Gemini 用量極少）
+- ✅ **預設免費**（`screen_overview` 預設使用本地 GLM-OCR，完全免費）
+- ✅ **API 按需付費**（`--provider api` 或 `--provider full` 才會用到 Z.AI API）
 - ✅ **本地優先**（GLM-OCR + JSON全程本地，隱私安全）
 - ✅ **高精準度**（三工具互補，戰勝各自缺陷）
 - ✅ **可設計流程**：可用JSON預先告訴Agent每個狀態要怎麼去處理和策略
@@ -164,11 +166,28 @@ OmniParser/weights/
 
 ### 🔍 Screen Overview 三種模式
 
-#### API 模式（預設 ⚡）
+#### OCR 模式（預設 ⭐ 免費）
 ```
 phoneuse.py screen_overview
 ```
-直接將截圖送往 **Z.AI MaaS GLM-OCR API**，快速取得畫面文字內容與 Bounding Box 座標。
+使用**本地 GLM-OCR 伺服器**，快速取得畫面文字內容。完全免費！
+
+輸出格式：
+```
+公告
+更新情報
+活動資訊
+問題說明
+
+黎明界迷宮追加公會
+★3必中白金轉蛋
+```
+
+#### API 模式（Z.AI 雲端 💰）
+```
+phoneuse.py screen_overview --provider api
+```
+需要設定 `USE_LOCAL_GLM_OCR=false`，將截圖送往 **Z.AI MaaS GLM-OCR API**，取得 Bounding Box 座標。
 
 輸出格式：
 ```
@@ -177,11 +196,13 @@ phoneuse.py screen_overview
 [text] bbox=[493, 821, 589, 852] "蝦皮購物"
 ```
 
-#### OCR 模式（本地模型）
-```
-phoneuse.py screen_overview --provider ocr
-```
-需要設定 `USE_LOCAL_GLM_OCR=true`，使用本地 GLM-OCR 伺服器。
+> ⚠️ **重要限制**：Z.AI GLM-OCR API 在遇到**手機遊戲畫面**時，可能會把整個遊戲畫面當成圖片處理，導致：
+> - 無法正確辨識遊戲內的文字
+> - 輸出變成 "image" 而非 "text"
+> - 完全失去文字辨識能力
+>
+> 這是因為 GLM-OCR 的 Layout 模型設計主要針對「文件/網頁」，並非「遊戲截圖」。
+> 若需要自動化遊戲，建議使用 `--provider full`（會先用 OmniParser 偵測按鈕位置，再由 GLM-OCR 辨識文字）或純 `hierarchy` + `markers.json` 方案。
 
 #### Full 混合管線（詳細）
 ```
@@ -253,12 +274,12 @@ cp .env.example .env
 # 編輯 .env 填入你的 API Keys
 ```
 
-**必填：金鑰**
-- `ZAI_API_KEY` — Z.AI MaaS API Key（用於 screen_overview 預設模式）
+**必填：金鑰（用於 API 模式或 Full 混合管線）**
+- `ZAI_API_KEY` — Z.AI MaaS API Key
   - 請至 [Z.AI 官網](https://z.ai) 申請或聯繫取得 API Key
 
-**選填：本地模型**
-- `USE_LOCAL_GLM_OCR=true` — 若要使用本地 GLM-OCR 而非 Z.AI API，請設為 `true`
+**選填：Provider 切換**
+- `USE_LOCAL_GLM_OCR` — 設為 `false` 可啟用 Z.AI API 模式（預設為 `true`，使用本地模型）
 
 ### 4. 連接 Android 裝置
 
@@ -323,13 +344,13 @@ adb devices
 ### 執行 Agent 自動化
 
 ```bash
-# 查看目前畫面（預設使用 Z.AI API，有 BBox 座標）
+# 查看目前畫面（預設使用本地模型 ⭐ 免費）
 python phoneuse.py screen_overview
 
-# 查看目前畫面（OCR 模式，需要 USE_LOCAL_GLM_OCR=true）
-python phoneuse.py screen_overview --provider ocr
+# 查看目前畫面（使用 Z.AI API，有 BBox 座標，需設 USE_LOCAL_GLM_OCR=false）
+python phoneuse.py screen_overview --provider api
 
-# 查看目前畫面（Full 管線，最詳細）
+# 查看目前畫面（Full 管線，最詳細，需要 USE_LOCAL_GLM_OCR=false）
 python phoneuse.py screen_overview --provider full
 
 # 執行特定標記點

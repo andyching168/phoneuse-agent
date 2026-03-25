@@ -40,7 +40,7 @@ DEFAULT_GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
 # 重要：API Key 請透過環境變數或 .env 設定，切勿寫在 code 裡！
 ZAI_API_URL = os.environ.get("ZAI_API_URL", "https://api.z.ai/api/paas/v4/layout_parsing")
 ZAI_API_KEY = os.environ.get("ZAI_API_KEY", "")  # 必需設定環境變數
-USE_LOCAL_GLM_OCR = os.environ.get("USE_LOCAL_GLM_OCR", "false").lower() == "true"
+USE_LOCAL_GLM_OCR = os.environ.get("USE_LOCAL_GLM_OCR", "true").lower() == "true"  # 預設使用本地模型
 
 OMNIPARSER_INSTANCE = None
 OMNIPARSER_DIR = Path(__file__).parent / "OmniParser"
@@ -678,15 +678,16 @@ def cmd_screen_overview(
 ):
     """
     Screen overview with three modes:
-    - "api": Uses Z.AI MaaS GLM-OCR API directly (DEFAULT, needs USE_LOCAL_GLM_OCR=true to switch)
-    - "ocr": Uses local GLM-OCR server via ocr_server (local model mode)
+    - "ocr": Uses local GLM-OCR server (DEFAULT)
+    - "api": Uses Z.AI MaaS GLM-OCR API directly (set USE_LOCAL_GLM_OCR=false to switch)
     - "full": Full pipeline with OmniParser + GLM-OCR per box + Gemini refine (detailed)
     
-    預設使用 Z.AI API，若要使用本地模型請設環境變數 USE_LOCAL_GLM_OCR=true
+    預設使用本地模型，若要使用 Z.AI API 請設環境變數 USE_LOCAL_GLM_OCR=false
     """
     # 根據 USE_LOCAL_GLM_OCR 環境變數決定預設 provider
-    if provider == "api" and USE_LOCAL_GLM_OCR:
-        provider = "ocr"
+    # 預設使用本地模型（USE_LOCAL_GLM_OCR 預設 true）
+    # 若要使用 Z.AI API，設 USE_LOCAL_GLM_OCR=false
+    provider = "ocr" if USE_LOCAL_GLM_OCR else "api"
     
     provider_norm = (provider or "").strip().lower()
     if provider_norm not in ["api", "ocr", "full"]:
@@ -1037,8 +1038,8 @@ def main():
     p.add_argument('--json', dest='json_path', default=None, help='Path to markers JSON')
     p.add_argument('--duration', type=float, default=0.5, help='Swipe duration')
 
-    p = sub.add_parser('screen_overview', help='Describe current screen - default uses Z.AI API (set USE_LOCAL_GLM_OCR=true for local model)')
-    p.add_argument('--provider', default='api', choices=['api', 'ocr', 'full'], help='Provider: api (Z.AI MaaS API, default), ocr (local GLM-OCR server), full (OmniParser + GLM-OCR + Gemini)')
+    p = sub.add_parser('screen_overview', help='Describe current screen - default uses local model (set USE_LOCAL_GLM_OCR=false for cloud API)')
+    p.add_argument('--provider', default='ocr', choices=['api', 'ocr', 'full'], help='Provider: ocr (local GLM-OCR server, default), api (Z.AI MaaS API, set USE_LOCAL_GLM_OCR=false to use this)')
     p.add_argument('--glm-ocr-url', dest='glm_ocr_url', default=DEFAULT_GLM_OCR_SERVER_URL, help='GLM-OCR local server URL')
     p.add_argument('--no-image', action='store_true', help='Do not attach screenshot image')
     p.add_argument('--debug', action='store_true', help='Show debug metadata')

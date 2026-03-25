@@ -9,13 +9,13 @@ description: Control Android phone via ADB/uiautomator2 and drive flow with shop
 控制 Android 裝置，並可使用 `shopee.json`（含 `target_state`）形成可循環的流程控制。
 適合特殊app自動化（例如蝦皮購物）與一般 App 操作。
 
-## ⚡️ 預設模式：Z.AI MaaS API
+## ⚡️ 預設模式：本地模型（免費）
 
-**預設使用 Z.AI MaaS GLM-OCR API** 進行畫面辨識！
+**預設使用本地 GLM-OCR 伺服器** 進行畫面辨識，完全免費！
 
-若要切換到**本地模型**，請設定環境變數：
+若要切換到 **Z.AI MaaS API**，請設定環境變數：
 ```bash
-USE_LOCAL_GLM_OCR=true
+USE_LOCAL_GLM_OCR=false
 ```
 
 > ⚠️ **安全提醒**：API Key 請勿寫在 code 裡！請透過 `.env` 檔案或環境變數設定。`.env` 已在 `.gitignore` 中，不會被 commit。
@@ -137,9 +137,26 @@ python phoneuse.py run_marker_follow "主頁" "任務" --json shopee.json
 
 ## screen_overview - 畫面辨識（重要！）
 
-### 預設：Z.AI MaaS API ✅
+### 預設：本地模型 ⭐ 免費
 ```bash
 python phoneuse.py screen_overview 
+```
+
+輸出格式（純文字）：
+```
+公告
+更新情報
+活動資訊
+問題說明
+
+黎明界迷宮追加公會
+★3必中白金轉蛋
+```
+
+### --provider api（Z.AI 雲端 💰）
+若設定 `USE_LOCAL_GLM_OCR=false`，會改用 Z.AI MaaS GLM-OCR API。
+```bash
+USE_LOCAL_GLM_OCR=false python phoneuse.py screen_overview --provider api
 ```
 
 輸出格式（包含 Bounding Box 座標）：
@@ -150,16 +167,9 @@ python phoneuse.py screen_overview
 [text] bbox=[493, 821, 589, 852] "蝦皮購物"
 ```
 
-### --provider api（預設）
-使用 Z.AI MaaS GLM-OCR API，直接呼叫遠端服務，**不需要本地模型**。
+> ⚠️ **重要限制**：Z.AI GLM-OCR API 在遇到**手機遊戲畫面**時，可能會把整個遊戲畫面當成圖片處理，導致無法正確辨識遊戲內的文字。若需要自動化遊戲，建議使用 `--provider full` 或純 `markers.json` 方案。
 
-### --provider ocr（本地模型）
-若設定 `USE_LOCAL_GLM_OCR=true`，會改用本地 GLM-OCR server。
-```bash
-USE_LOCAL_GLM_OCR=true python phoneuse.py screen_overview --provider ocr
-```
-
-### --provider full（超詳細模式）⚠️ 需要本地模型
+### --provider full（超詳細模式）⚠️ 需要 Z.AI API
 使用 OmniParser + GLM-OCR + Gemini，提供每個 UI 元素的：
 - 精確座標 (`bbox`, `bbox_ratio`)
 - 文字內容 (`content`)
@@ -167,10 +177,13 @@ USE_LOCAL_GLM_OCR=true python phoneuse.py screen_overview --provider ocr
 - 圖示語意標籤 (`icon_label`)
 
 ```bash
-python phoneuse.py screen_overview --provider full
+USE_LOCAL_GLM_OCR=false python phoneuse.py screen_overview --provider full
 ```
 
 > ⚠️ full 模式需要 `omni` conda 環境才能正常載入 OmniParser。
+> ```bash
+> /home/ac/miniconda3/bin/conda run -n omni python phoneuse.py screen_overview --provider full
+> ```
 
 ## Usage Pattern
 
@@ -227,8 +240,8 @@ python -m uiautomator2 init
 
 | 變數 | 預設值 | 說明 |
 |------|--------|------|
-| `ZAI_API_KEY` | (必填) | Z.AI API Key，**必需設定** |
-| `USE_LOCAL_GLM_OCR` | `false` | 設為 `true` 可切換到本地 GLM-OCR server |
+| `ZAI_API_KEY` | (選填) | Z.AI API Key（用於 `--provider api` 或 `--provider full`） |
+| `USE_LOCAL_GLM_OCR` | `true` | 設為 `false` 可切換到 Z.AI 雲端 API |
 | `GLM_OCR_SERVER_URL` | `http://192.168.0.212:8765/ocr` | 本地 GLM-OCR server URL |
 | `GEMINI_API_KEY` | - | Gemini API Key (用於 annotate) |
 
