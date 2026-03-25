@@ -12,8 +12,9 @@
 |------|------|------|--------|------|
 | **phone_hierarchy** | ⭐ 免費 | ⚡ 快 | ⚠️ 中（僅結構文字） | Android uiautomator2（不適合遊戲/複雜 App） |
 | **本地 OCR + 預先標注json** | ⭐ 免費 | ⚡ 快 | ✅ 高 | TaggingTool 預先標注 |
-| **phone_annotate** | 💰 需要 API Key | ⚡ 中 | ✅ 高 | Gemini API Key |
-| **Full 混合管線** | 💰 需要 API Key | ⚡ 慢 | ✅ 非常高 | Gemini API Key + GLM-OCR |
+| **screen_overview (預設)** | 💰 Z.AI API | ⚡ 快 | ✅ 高 | Z.AI API Key |
+| **screen_overview full** | 💰 Z.AI API | ⚡ 慢 | ✅ 非常高 | Z.AI API Key + OmniParser |
+| **phone_annotate** | 💰 Gemini API | ⚡ 中 | ✅ 高 | Gemini API Key |
 
 ### 為什麼選擇 Full 混合方案？
 
@@ -22,7 +23,8 @@
 | 工具 | 單獨使用時的缺陷 |
 |------|-----------------|
 | **phone_hierarchy** | 只能取得結構文字，**遊戲/複雜 App（如蝦皮）幾乎無法使用** |
-| **GLM-OCR** | 只能辨識文字，**不知道哪裡是可點擊的按鈕** |
+| **Z.AI GLM-OCR API** | 只能辨識文字 + BBox，**不知道哪裡是可點擊的按鈕** |
+| **本地 GLM-OCR** | 只能辨識文字，**不知道哪裡是可點擊的按鈕** |
 | **OmniParser** | 只能偵測元素位置與簡單描述，**細節文字辨識,元素種類容易出錯** |
 | **Gemini** |單獨使用Gemini 3 Flash,**多輪後成本可觀**|
 
@@ -50,9 +52,8 @@ icon 1: {type: icon_button, content: "返回上一頁", bbox: [30, 30, 90, 90]}
 ```
 
 **結果：**
-- ✅ **極少 API 費用**（GLM-OCR 本地運行，Gemini 用量極少）
-- ✅ **本地優先**（GLM-OCR + JSON全程本地）
-- ✅ **隱私安全**（截圖不上傳）
+- ✅ **極少 API 費用**（GLM-OCR 本地運行或 Z.AI API，Gemini 用量極少）
+- ✅ **本地優先**（GLM-OCR + JSON全程本地，隱私安全）
 - ✅ **高精準度**（三工具互補，戰勝各自缺陷）
 - ✅ **可設計流程**：可用JSON預先告訴Agent每個狀態要怎麼去處理和策略
 - ✅ **可自訂**：完全開源，可根據需求修改
@@ -161,13 +162,26 @@ OmniParser/weights/
 - 各元素的精確座標
 - 點擊後會跳转到哪個新狀態
 
-### 🔍 Screen Overview 兩種模式
+### 🔍 Screen Overview 三種模式
 
-#### OCR 模式（快速）
+#### API 模式（預設 ⚡）
+```
+phoneuse.py screen_overview
+```
+直接將截圖送往 **Z.AI MaaS GLM-OCR API**，快速取得畫面文字內容與 Bounding Box 座標。
+
+輸出格式：
+```
+[IMAGE] size=1080x2220
+[text] bbox=[135, 610, 256, 638] "MQTT_Hiyo"
+[text] bbox=[493, 821, 589, 852] "蝦皮購物"
+```
+
+#### OCR 模式（本地模型）
 ```
 phoneuse.py screen_overview --provider ocr
 ```
-直接將截圖送往 GLM-OCR 本機伺服器，取得畫面文字內容。
+需要設定 `USE_LOCAL_GLM_OCR=true`，使用本地 GLM-OCR 伺服器。
 
 #### Full 混合管線（詳細）
 ```
@@ -239,6 +253,13 @@ cp .env.example .env
 # 編輯 .env 填入你的 API Keys
 ```
 
+**必填：金鑰**
+- `ZAI_API_KEY` — Z.AI MaaS API Key（用於 screen_overview 預設模式）
+  - 請至 [Z.AI 官網](https://z.ai) 申請或聯繫取得 API Key
+
+**選填：本地模型**
+- `USE_LOCAL_GLM_OCR=true` — 若要使用本地 GLM-OCR 而非 Z.AI API，請設為 `true`
+
 ### 4. 連接 Android 裝置
 
 確保 ADB 已安裝並啟用 USB 偵錯：
@@ -302,10 +323,13 @@ adb devices
 ### 執行 Agent 自動化
 
 ```bash
-# 查看目前畫面（OCR 模式）
+# 查看目前畫面（預設使用 Z.AI API，有 BBox 座標）
+python phoneuse.py screen_overview
+
+# 查看目前畫面（OCR 模式，需要 USE_LOCAL_GLM_OCR=true）
 python phoneuse.py screen_overview --provider ocr
 
-# 查看目前畫面（Full 管線）
+# 查看目前畫面（Full 管線，最詳細）
 python phoneuse.py screen_overview --provider full
 
 # 執行特定標記點
@@ -321,9 +345,11 @@ python phoneuse.py run_marker_follow "首頁" "開始遊戲按鈕" --json marker
 
 | 變數 | 說明 | 預設值 |
 |------|------|--------|
+| `ZAI_API_KEY` | **Z.AI MaaS API Key（用於 screen_overview 預設模式）** | 必填 |
+| `USE_LOCAL_GLM_OCR` | 設為 `true` 可切換到本地 GLM-OCR server | `false` |
 | `GEMINI_API_KEY` | Google Gemini API Key（用於 annotate 和 full 管線） | - |
 | `OPENROUTER_API_KEY` | OpenRouter API Key | - |
-| `GLM_OCR_SERVER_URL` | GLM-OCR 本機服務位址 | `http://192.168.0.212:8765/ocr` |
+| `GLM_OCR_SERVER_URL` | GLM-OCR 本機服務位址（本地模式使用） | `http://192.168.0.212:8765/ocr` |
 | `OLLAMA_MODEL` | Ollama 模型名稱 | `qwen3.5:0.8b` |
 
 ---
@@ -334,14 +360,14 @@ python phoneuse.py run_marker_follow "首頁" "開始遊戲按鈕" --json marker
 PhoneUse/
 ├── main.py              # TaggingTool GUI 工具
 ├── phoneuse.py          # CLI 主程式
-├── ocrServer.py        # OCR 伺服器
+├── ocrServer.py         # OCR 伺服器（可選，本地模式使用）
 ├── markers.json          # 範例標記檔案
-├── screenshot/          # 截圖存放
-├── images/              # TaggingTool 管理的圖片
-├── OmniParser/          # OmniParser 模型
-├── .env                 # 環境變數（不上傳）
-├── .env.example         # 環境變數範本
-├── SKILL.md             # 給Agent看的說明
+├── screenshot/           # 截圖存放（自動生成）
+├── images/               # TaggingTool 管理的圖片
+├── OmniParser/           # OmniParser 模型
+├── .env                  # 環境變數（不上傳，會被 gitignore）
+├── .env.example          # 環境變數範本
+├── SKILL.md              # 給 Agent 看的說明
 └── requirements.txt
 ```
 

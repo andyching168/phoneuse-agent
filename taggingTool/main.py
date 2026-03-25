@@ -508,6 +508,7 @@ class MarkerGraphicsScene(QGraphicsScene):
     markerClicked = pyqtSignal(int)
     markerAdded = pyqtSignal()
     markerRightClicked = pyqtSignal(int)
+    markerEditConfirmed = pyqtSignal(int, int, int, int, int)  # index, ax, ay, bx, by
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -519,6 +520,11 @@ class MarkerGraphicsScene(QGraphicsScene):
         self.source_resolution = (1920, 1080)
         self.pending_swipe_start: Optional[tuple[int, int]] = None
         self.setSceneRect(0, 0, 800, 600)
+        
+        # Edit mode state
+        self.edit_mode = False
+        self.edit_marker_index = -1
+        self.edit_preview_item: Optional[QGraphicsItem] = None
         
     def set_image(self, pixmap: QPixmap):
         self.clear()
@@ -554,6 +560,65 @@ class MarkerGraphicsScene(QGraphicsScene):
         self.marker_labels.append(res_text)
         
         self.setSceneRect(0, 0, width, height)
+        
+    def start_edit_mode(self, marker_index: int):
+        """Enter edit mode for a specific marker, allowing user to click canvas to set new position."""
+        self.edit_mode = True
+        self.edit_marker_index = marker_index
+        self._draw_edit_preview()
+        
+    def cancel_edit_mode(self):
+        """Cancel edit mode without applying changes."""
+        self.edit_mode = False
+        self.edit_marker_index = -1
+        self._clear_edit_preview()
+        
+    def _draw_edit_preview(self):
+        """Draw a preview of where the marker will be moved to."""
+        self._clear_edit_preview()
+        if self.edit_marker_index < 0 or self.edit_marker_index >= len(self.markers):
+            return
+            
+        marker = self.markers[self.edit_marker_index]
+        scaled_x = marker.x * self.sceneRect().width() / self.target_resolution[0]
+        scaled_y = marker.y * self.sceneRect().height() / self.target_resolution[1]
+        
+        marker_diameter = max(16.0, min(self.sceneRect().width(), self.sceneRect().height()) * 0.02)
+        marker_radius = marker_diameter / 2.0
+        
+        # Draw dashed circle to indicate edit mode
+        ellipse = QGraphicsEllipseItem(
+            scaled_x - marker_radius,
+            scaled_y - marker_radius,
+            marker_diameter,
+            marker_diameter
+        )
+        ellipse.setPen(QPen(QColor(255, 255, 0), 3, Qt.PenStyle.DashLine))
+        ellipse.setBrush(QBrush(QColor(255, 255, 0, 50)))
+        ellipse.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, False)
+        ellipse.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, False)
+        self.addItem(ellipse)
+        self.edit_preview_item = ellipse
+        
+        # Add text label
+        text = self.addText(f"[編輯模式] 點擊設定新座標")
+        text.setPos(scaled_x + marker_radius + 4, scaled_y - marker_radius)
+        text.setDefaultTextColor(QColor(255, 255, 0))
+        text.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, False)
+        self.marker_labels.append(text)
+        
+    def _clear_edit_preview(self):
+        """Clear the edit preview."""
+        if self.edit_preview_item:
+            self.removeItem(self.edit_preview_item)
+            self.edit_preview_item = None
+        # Also clear any edit-related labels
+        for label in list(self.marker_labels):
+            if isinstance(label, QGraphicsTextItem):
+                if "[編輯模式]" in (label.toPlainText() or ""):
+                    self.removeItem(label)
+                    if label in self.marker_labels:
+                        self.marker_labels.remove(label)
         
     def set_target_resolution(self, width: int, height: int):
         self.target_resolution = (width, height)
@@ -668,6 +733,36 @@ class MarkerGraphicsScene(QGraphicsScene):
                 x = int(round(pos.x() * scale_x))
                 y = int(round(pos.y() * scale_y))
 
+                # Handle edit mode - clicking canvas sets new position
+                if self.edit_mode and self.edit_marker_index >= 0:
+                    if self.edit_marker_index < len(self.markers):
+                        marker = self.markers[self.edit_marker_index]
+                        # If it's a swipe marker, we need both start and end points
+                        if marker.marker_type == "swipe":
+                            if self.pending_swipe_start is None:
+                                # First click: set A point
+                                self.pending_swipe_start = (x, y)
+                                # Update preview position
+                                self._draw_edit_preview_for_point(x, y, is_a=True)
+                            else:
+                                # Second click: set B point and confirm
+                                ax, ay = self.pending_swipe_start
+                                self.pending_swipe_start = None
+                                # Emit signal with marker index and type only; 
+                                # MainWindow will update using stored pending A point
+                                self.markerEditConfirmed.emit(self.edit_marker_index, ax, ay, x, y)
+                                self.edit_mode = False
+                                self.edit_marker_index = -1
+                                self._clear_edit_preview()
+                        else:
+                            # Tap marker - just set the single point
+                            self.markerEditConfirmed.emit(self.edit_marker_index, x, y, x, y)
+                            self.edit_mode = False
+                            self.edit_marker_index = -1
+                            self._clear_edit_preview()
+                    return
+                
+                # Normal mode - add new marker
                 is_ctrl = bool(event.modifiers() & Qt.KeyboardModifier.ControlModifier)
                 if is_ctrl:
                     if self.pending_swipe_start is None:
@@ -690,6 +785,35 @@ class MarkerGraphicsScene(QGraphicsScene):
                             self.add_marker(name, tx, ty, marker_type, bx, by)
                     
         super().mousePressEvent(event)
+    
+    def _draw_edit_preview_for_point(self, x: int, y: int, is_a: bool = True):
+        """Update preview to show current pending point for swipe editing."""
+        self._clear_edit_preview()
+        
+        scaled_x = x * self.sceneRect().width() / self.target_resolution[0]
+        scaled_y = y * self.sceneRect().height() / self.target_resolution[1]
+        
+        marker_diameter = max(16.0, min(self.sceneRect().width(), self.sceneRect().height()) * 0.02)
+        marker_radius = marker_diameter / 2.0
+        
+        prefix = "A" if is_a else "B"
+        ellipse = QGraphicsEllipseItem(
+            scaled_x - marker_radius,
+            scaled_y - marker_radius,
+            marker_diameter,
+            marker_diameter
+        )
+        ellipse.setPen(QPen(QColor(255, 255, 0), 3, Qt.PenStyle.DashLine))
+        ellipse.setBrush(QBrush(QColor(255, 255, 0, 50)))
+        ellipse.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, False)
+        self.addItem(ellipse)
+        self.edit_preview_item = ellipse
+        
+        text = self.addText(f"[編輯模式] A點已設定，點擊設定B點")
+        text.setPos(scaled_x + marker_radius + 4, scaled_y - marker_radius)
+        text.setDefaultTextColor(QColor(255, 255, 0))
+        text.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, False)
+        self.marker_labels.append(text)
 
 
 class AutoFitGraphicsView(QGraphicsView):
@@ -1137,6 +1261,7 @@ class MainWindow(QMainWindow):
         graphics_view.resized.connect(self.fit_image_to_view)
         scene.markerAdded.connect(self.on_scene_marker_added)
         scene.markerRightClicked.connect(self.on_scene_marker_right_clicked)
+        scene.markerEditConfirmed.connect(self.on_marker_edit_confirmed)
         scene.set_target_resolution(self.base_resolution[0], self.base_resolution[1])
         left_layout.addWidget(graphics_view)
         
@@ -1377,6 +1502,20 @@ class MainWindow(QMainWindow):
         if 0 <= target_index < len(self.states):
             self.save_screenshot_to_state(pixmap, self.states[target_index])
 
+    def keyPressEvent(self, event):
+        # Handle ESC to cancel edit mode
+        if event.key() == Qt.Key.Key_Escape:
+            context = self.get_tab_context()
+            if context and context.scene.edit_mode:
+                context.scene.cancel_edit_mode()
+                if hasattr(self, '_edit_pending_a'):
+                    self._edit_pending_a = None
+                if hasattr(self, '_pending_b_for_edit'):
+                    self._pending_b_for_edit = None
+                QMessageBox.information(self, "取消編輯", "已取消編輯模式。")
+                return
+        super().keyPressEvent(event)
+    
     def closeEvent(self, event):
         if self.is_android_capture_running:
             QMessageBox.information(self, "請稍候", "正在從 Android 擷取畫面，請等待完成後再關閉。")
@@ -1788,19 +1927,48 @@ class MainWindow(QMainWindow):
         if 0 <= self.current_state_index < len(self.states):
             state = self.states[self.current_state_index]
             if 0 <= idx < len(state.markers):
-                dialog = MarkerEditDialog(state.markers[idx], self)
-                if dialog.exec() == QDialog.DialogCode.Accepted:
-                    name, x, y, marker_type, bx, by = dialog.get_values()
-                    state.markers[idx] = Marker(
-                        name=name,
-                        x=x,
-                        y=y,
-                        marker_type=marker_type,
-                        bx=bx,
-                        by=by,
-                        target_state=state.markers[idx].target_state
+                marker = state.markers[idx]
+                if marker.marker_type == "swipe":
+                    QMessageBox.information(
+                        self,
+                        "編輯模式",
+                        f"已进入编辑模式！\n\n"
+                        f"标定点「{marker.name}」是滑動類型。\n"
+                        f"• 第一次點擊：設定 A 點（新座標）\n"
+                        f"• 第二次點擊：設定 B 點（結束座標）\n\n"
+                        f"按 ESC 可取消編輯。"
                     )
-                    self.update_marker_list()
+                else:
+                    QMessageBox.information(
+                        self,
+                        "編輯模式",
+                        f"已进入编辑模式！\n\n"
+                        f"标定点「{marker.name}」是點擊類型。\n"
+                        f"直接點擊畫面設定新座標。\n\n"
+                        f"按 ESC 可取消編輯。"
+                    )
+                context.scene.start_edit_mode(idx)
+    
+    def on_marker_edit_confirmed(self, marker_index: int, ax: int, ay: int, bx: int, by: int):
+        """Handle marker edit confirmation from canvas click."""
+        if not (0 <= self.current_state_index < len(self.states)):
+            return
+        state = self.states[self.current_state_index]
+        if not (0 <= marker_index < len(state.markers)):
+            return
+        
+        marker = state.markers[marker_index]
+        if marker.marker_type == "swipe":
+            # Update both A and B points
+            marker.x = ax
+            marker.y = ay
+            marker.bx = bx
+            marker.by = by
+        else:
+            # For tap, just update the single point
+            marker.x = ax
+            marker.y = ay
+        self.update_marker_list()
     
     def delete_marker(self):
         context = self.get_tab_context()
@@ -1919,19 +2087,59 @@ class MainWindow(QMainWindow):
         if answer != QMessageBox.StandardButton.Yes:
             return
 
-        target_state.markers = [
-            Marker(
-                name=marker.name,
-                x=marker.x,
-                y=marker.y,
-                marker_type=marker.marker_type,
-                bx=marker.bx,
-                by=marker.by,
-                target_state=marker.target_state
+        source_marker_dict = {m.name: m for m in source_state.markers}
+        target_marker_dict = {m.name: m for m in target_state.markers}
+        
+        # If target is empty, copy all from source
+        if not target_state.markers:
+            target_state.markers = [
+                Marker(
+                    name=marker.name,
+                    x=marker.x,
+                    y=marker.y,
+                    marker_type=marker.marker_type,
+                    bx=marker.bx,
+                    by=marker.by,
+                    target_state=marker.target_state
+                )
+                for marker in source_state.markers
+            ]
+            self.update_marker_list()
+            QMessageBox.information(
+                self,
+                "複製標記",
+                f"目標狀態為空，已複製來源的所有 {len(target_state.markers)} 個標記。"
             )
-            for marker in source_state.markers
-        ]
-        self.update_marker_list()
+            return
+        
+        # Otherwise, only overwrite markers where name matches
+        matched_names = set(source_marker_dict.keys()) & set(target_marker_dict.keys())
+        updated_count = 0
+        
+        for name in matched_names:
+            source_marker = source_marker_dict[name]
+            target_marker_dict[name].x = source_marker.x
+            target_marker_dict[name].y = source_marker.y
+            target_marker_dict[name].bx = source_marker.bx
+            target_marker_dict[name].by = source_marker.by
+            target_marker_dict[name].marker_type = source_marker.marker_type
+            updated_count += 1
+        
+        if updated_count > 0:
+            self.update_marker_list()
+            QMessageBox.information(
+                self,
+                "複製標記",
+                f"已更新 {updated_count} 個同名標記（只覆蓋名字相同的）。"
+            )
+        else:
+            QMessageBox.information(
+                self,
+                "複製標記",
+                f"來源狀態與目標狀態沒有同名的標記。\n\n"
+                f"來源：{list(source_marker_dict.keys())}\n"
+                f"目標：{list(target_marker_dict.keys())}"
+            )
 
     def _sanitize_filename(self, name: str) -> str:
         invalid_chars = '<>:"/\\|?*'
@@ -2083,29 +2291,28 @@ class MainWindow(QMainWindow):
             missing_images = []
 
             for index, state in enumerate(self.states, start=1):
-                if not state.image_path:
-                    continue
-
-                source_path = state.image_path
-                if not os.path.isabs(source_path):
-                    source_path = os.path.abspath(source_path)
-
-                if not os.path.exists(source_path):
-                    missing_images.append(state.name)
-                    continue
-
-                source_ext = os.path.splitext(source_path)[1].lower() or ".png"
-                safe_state_name = self._sanitize_filename(state.name)
-                new_file_name = f"{index:02d}_{safe_state_name}{source_ext}"
-                destination_path = self._build_unique_path(images_dir, new_file_name)
-                shutil.copy2(source_path, destination_path)
-
                 exported_state = {
                     "name": state.name,
                     "description": state.description,
-                    "image_path": os.path.relpath(destination_path, export_dir),
+                    "image_path": "",
                     "markers": [m.to_dict() for m in state.markers]
                 }
+                
+                if state.image_path:
+                    source_path = state.image_path
+                    if not os.path.isabs(source_path):
+                        source_path = os.path.abspath(source_path)
+
+                    if os.path.exists(source_path):
+                        source_ext = os.path.splitext(source_path)[1].lower() or ".png"
+                        safe_state_name = self._sanitize_filename(state.name)
+                        new_file_name = f"{index:02d}_{safe_state_name}{source_ext}"
+                        destination_path = self._build_unique_path(images_dir, new_file_name)
+                        shutil.copy2(source_path, destination_path)
+                        exported_state["image_path"] = os.path.relpath(destination_path, export_dir)
+                    else:
+                        missing_images.append(state.name)
+                
                 exported_states.append(exported_state)
 
             output = {
@@ -2120,7 +2327,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(
                     self,
                     "部分匯出",
-                    f"已匯出至 {file_path}\n\n以下狀態因找不到圖片而略過：\n" + "\n".join(missing_images)
+                    f"已匯出至 {file_path}\n\n以下狀態的圖片找不到，已匯出但無圖片：\n" + "\n".join(missing_images)
                 )
             else:
                 QMessageBox.information(self, "成功", f"已匯出至 {file_path}")

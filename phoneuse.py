@@ -36,6 +36,12 @@ DEFAULT_OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 DEFAULT_GLM_OCR_SERVER_URL = os.environ.get("GLM_OCR_SERVER_URL", "http://192.168.0.212:8765/ocr")
 DEFAULT_GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
 
+# Z.AI MaaS API (預設使用這個!)
+# 重要：API Key 請透過環境變數或 .env 設定，切勿寫在 code 裡！
+ZAI_API_URL = os.environ.get("ZAI_API_URL", "https://api.z.ai/api/paas/v4/layout_parsing")
+ZAI_API_KEY = os.environ.get("ZAI_API_KEY", "")  # 必需設定環境變數
+USE_LOCAL_GLM_OCR = os.environ.get("USE_LOCAL_GLM_OCR", "false").lower() == "true"
+
 OMNIPARSER_INSTANCE = None
 OMNIPARSER_DIR = Path(__file__).parent / "OmniParser"
 OMNIPARSER_CONFIG = {
@@ -219,6 +225,74 @@ def glm_ocr_server_chat(
         return json.dumps(data, ensure_ascii=False)
 
     return str(data).strip()
+
+
+def glm_ocr_api_chat(
+    image_base64: str,
+    api_url: str = ZAI_API_URL,
+    api_key: str = ZAI_API_KEY,
+    timeout: int = 120,
+) -> str:
+    """Call Z.AI MaaS GLM-OCR API directly (預設模式)."""
+    if not api_key:
+        raise RuntimeError(
+            "ZAI_API_KEY 未設定！請在 .env 檔案中設定 ZAI_API_KEY，"
+            "或 export ZAI_API_KEY=your_api_key"
+        )
+    
+    payload = {
+        "model": "glm-ocr",
+        "file": f"data:image/png;base64,{image_base64}"
+    }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    try:
+        response = requests.post(api_url, headers=headers, json=payload, timeout=timeout)
+    except requests.RequestException as e:
+        raise RuntimeError(f"無法連線到 Z.AI API: {e}")
+    
+    if response.status_code != 200:
+        raise RuntimeError(f"Z.AI API 失敗 (HTTP {response.status_code}): {response.text}")
+    
+    result = response.json()
+    
+    # Parse Z.AI response format: layout_details[page_index][items]
+    # Each item has: bbox_2d, content, label, native_label, height, width, index
+    layout_details = result.get("layout_details", [])
+    if not layout_details or not layout_details[0]:
+        # Fallback to markdown result
+        md = result.get("md_results", "")
+        if md:
+            return md
+        return json.dumps(result, ensure_ascii=False)
+    
+    items = layout_details[0]
+    output_lines = []
+    
+    # 圖片資訊
+    data_info = result.get("data_info", {})
+    if data_info:
+        pages = data_info.get("pages", [{}])
+        if pages:
+            img_h = pages[0].get("height", 0)
+            img_w = pages[0].get("width", 0)
+            output_lines.append(f"[IMAGE] size={img_w}x{img_h}")
+    
+    for item in items:
+        bbox = item.get("bbox_2d", [])
+        content = item.get("content", "")
+        label = item.get("label", "text")
+        native_label = item.get("native_label", "")
+        
+        if content:
+            output_lines.append(f"[{label}] bbox={bbox} \"{content}\"")
+        else:
+            output_lines.append(f"[{label}] bbox={bbox}")
+    
+    return "\n".join(output_lines)
 
 
 def strip_reasoning_output(text: str) -> str:
@@ -598,18 +672,25 @@ def cmd_run_marker_and_follow(state_name: str, marker_name: str, json_path: Opti
 
 def cmd_screen_overview(
     use_image: bool = True,
-    provider: str = "ocr",
+    provider: str = "api",
     glm_ocr_url: str = DEFAULT_GLM_OCR_SERVER_URL,
     debug: bool = False,
 ):
     """
-    Screen overview with two modes:
-    - "ocr": Uses GLM-OCR server via ocr_server (fast, text-focused)
+    Screen overview with three modes:
+    - "api": Uses Z.AI MaaS GLM-OCR API directly (DEFAULT, needs USE_LOCAL_GLM_OCR=true to switch)
+    - "ocr": Uses local GLM-OCR server via ocr_server (local model mode)
     - "full": Full pipeline with OmniParser + GLM-OCR per box + Gemini refine (detailed)
+    
+    預設使用 Z.AI API，若要使用本地模型請設環境變數 USE_LOCAL_GLM_OCR=true
     """
+    # 根據 USE_LOCAL_GLM_OCR 環境變數決定預設 provider
+    if provider == "api" and USE_LOCAL_GLM_OCR:
+        provider = "ocr"
+    
     provider_norm = (provider or "").strip().lower()
-    if provider_norm not in ["ocr", "full"]:
-        return json.dumps({"error": f"不支援的 provider: {provider}，僅支援 'ocr' 或 'full'"})
+    if provider_norm not in ["api", "ocr", "full"]:
+        return json.dumps({"error": f"不支援的 provider: {provider}，僅支援 'api'、'ocr' 或 'full'"})
 
     debug_info: Dict[str, Any] = {
         "provider": provider_norm,
@@ -638,7 +719,14 @@ def cmd_screen_overview(
         })
 
     try:
-        if provider_norm == "ocr":
+        if provider_norm == "api":
+            # Z.AI MaaS API (預設模式)
+            content = glm_ocr_api_chat(
+                image_base64=image_base64,
+                timeout=120,
+            )
+        elif provider_norm == "ocr":
+            # 本地 GLM-OCR server
             content = glm_ocr_server_chat(
                 image_base64=image_base64,
                 server_url=glm_ocr_url,
@@ -949,8 +1037,8 @@ def main():
     p.add_argument('--json', dest='json_path', default=None, help='Path to markers JSON')
     p.add_argument('--duration', type=float, default=0.5, help='Swipe duration')
 
-    p = sub.add_parser('screen_overview', help='Describe current screen - use --provider ocr (default) for GLM-OCR, or --provider full for full pipeline')
-    p.add_argument('--provider', default='ocr', choices=['ocr', 'full'], help='Provider: ocr (GLM-OCR server) or full (OmniParser + GLM-OCR + Gemini)')
+    p = sub.add_parser('screen_overview', help='Describe current screen - default uses Z.AI API (set USE_LOCAL_GLM_OCR=true for local model)')
+    p.add_argument('--provider', default='api', choices=['api', 'ocr', 'full'], help='Provider: api (Z.AI MaaS API, default), ocr (local GLM-OCR server), full (OmniParser + GLM-OCR + Gemini)')
     p.add_argument('--glm-ocr-url', dest='glm_ocr_url', default=DEFAULT_GLM_OCR_SERVER_URL, help='GLM-OCR local server URL')
     p.add_argument('--no-image', action='store_true', help='Do not attach screenshot image')
     p.add_argument('--debug', action='store_true', help='Show debug metadata')

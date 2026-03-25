@@ -1,4 +1,4 @@
-````skill
+```skill
 ---
 name: phone-use
 description: Control Android phone via ADB/uiautomator2 and drive flow with shopee.json state machine.
@@ -8,7 +8,17 @@ description: Control Android phone via ADB/uiautomator2 and drive flow with shop
 
 控制 Android 裝置，並可使用 `shopee.json`（含 `target_state`）形成可循環的流程控制。
 適合特殊app自動化（例如蝦皮購物）與一般 App 操作。
-以下所有指令請使用"omni"的conda環境執行
+
+## ⚡️ 預設模式：Z.AI MaaS API
+
+**預設使用 Z.AI MaaS GLM-OCR API** 進行畫面辨識！
+
+若要切換到**本地模型**，請設定環境變數：
+```bash
+USE_LOCAL_GLM_OCR=true
+```
+
+> ⚠️ **安全提醒**：API Key 請勿寫在 code 裡！請透過 `.env` 檔案或環境變數設定。`.env` 已在 `.gitignore` 中，不會被 commit。
 
 ## Available Tools
 
@@ -101,7 +111,6 @@ python phoneuse.py annotate
 除非是連screen_overview full都無法應對的情況,再使用phone_annotate.
 The output includes `center` coordinates for direct `phone_click`.
 
-
 ### phone_list_states
 讀取標記檔中的狀態清單（含 base_resolution / description / marker_count）。
 ```bash
@@ -126,18 +135,36 @@ python phoneuse.py run_marker "主頁" "任務" --json markers.json
 python phoneuse.py run_marker_follow "主頁" "任務" --json shopee.json
 ```
 
-### phone_screen_overview
-使用本地 OCR 模型快速描述目前畫面（普通模式）。
+## screen_overview - 畫面辨識（重要！）
+
+### 預設：Z.AI MaaS API ✅
 ```bash
 python phoneuse.py screen_overview 
 ```
 
-**--provider full（超詳細模式）**  
+輸出格式（包含 Bounding Box 座標）：
+```
+[IMAGE] size=1080x2220
+[image] bbox=[20, 2, 237, 38]
+[text] bbox=[135, 610, 256, 638] "MQTT_Hiyo"
+[text] bbox=[493, 821, 589, 852] "蝦皮購物"
+```
+
+### --provider api（預設）
+使用 Z.AI MaaS GLM-OCR API，直接呼叫遠端服務，**不需要本地模型**。
+
+### --provider ocr（本地模型）
+若設定 `USE_LOCAL_GLM_OCR=true`，會改用本地 GLM-OCR server。
+```bash
+USE_LOCAL_GLM_OCR=true python phoneuse.py screen_overview --provider ocr
+```
+
+### --provider full（超詳細模式）⚠️ 需要本地模型
 使用 OmniParser + GLM-OCR + Gemini，提供每個 UI 元素的：
 - 精確座標 (`bbox`, `bbox_ratio`)
 - 文字內容 (`content`)
 - 是否可互動 (`interactivity`)
-- 圖示語意標籤 (`icon_label`，如 `expense`、`Food`、`Motorcycle Refueling`)
+- 圖示語意標籤 (`icon_label`)
 
 ```bash
 python phoneuse.py screen_overview --provider full
@@ -194,12 +221,20 @@ python phoneuse.py list_states --json shopee.json
 ```bash
 pip install -r requirements.txt
 python -m uiautomator2 init
-
 ```
 
-````
+## 環境變數
 
-### ⚠️ 實作心得（2026-03-17 新增）
+| 變數 | 預設值 | 說明 |
+|------|--------|------|
+| `ZAI_API_KEY` | (必填) | Z.AI API Key，**必需設定** |
+| `USE_LOCAL_GLM_OCR` | `false` | 設為 `true` 可切換到本地 GLM-OCR server |
+| `GLM_OCR_SERVER_URL` | `http://192.168.0.212:8765/ocr` | 本地 GLM-OCR server URL |
+| `GEMINI_API_KEY` | - | Gemini API Key (用於 annotate) |
+
+> ⚠️ 所有 API Key 請勿寫在 code 裡，請透過 `.env` 設定！
+
+## ⚠️ 實作心得（2026-03-17 新增）
 
 1. **優先使用 JSON 標示**：有狀態機 JSON 時，優先用 `run_marker_follow` 導航，不要直接用 hierarchy 找座標
 2. **辨識目前狀態**：根據畫面上的元素來判斷（例如：所有訂單顯示「已完成」代表在「全部」或「訂單已完成」tab）
