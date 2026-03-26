@@ -1,24 +1,24 @@
 {
   "base_resolution": [
-    2712,
-    1220
+    2220,
+    1080
   ],
   "states": [
     {
       "name": "首頁_資料下載",
       "description": "",
-      "image_path": "markers_images/Priconne/01_首頁_資料下載_15.png",
+      "image_path": "markers_images/01_首頁_資料下載_2.png",
       "markers": [
         {
           "name": "OK",
-          "x": 1610,
-          "y": 806,
+          "x": 1336,
+          "y": 746,
           "type": "tap"
         },
         {
           "name": "取消",
-          "x": 1108,
-          "y": 803,
+          "x": 891,
+          "y": 724,
           "type": "tap"
         }
       ]
@@ -26,12 +26,12 @@
     {
       "name": "首頁",
       "description": "開始遊戲有機會跳資料下載",
-      "image_path": "markers_images/Priconne/02_首頁_15.png",
+      "image_path": "",
       "markers": [
         {
           "name": "開始遊戲",
-          "x": 1347,
-          "y": 1114,
+          "x": 1156,
+          "y": 861,
           "type": "tap"
         }
       ]
@@ -39,12 +39,12 @@
     {
       "name": "新卡池廣告",
       "description": "有可能是一個，也有可能是兩個",
-      "image_path": "markers_images/Priconne/03_新卡池廣告_15.png",
+      "image_path": "",
       "markers": [
         {
           "name": "繼續",
-          "x": 1393,
-          "y": 1101,
+          "x": 1095,
+          "y": 896,
           "type": "tap"
         }
       ]
@@ -52,12 +52,12 @@
     {
       "name": "主頁_公告",
       "description": "直接關閉即可",
-      "image_path": "markers_images/Priconne/04_主頁_公告_14.png",
+      "image_path": "markers_images/04_主頁_公告_2.png",
       "markers": [
         {
           "name": "關閉",
-          "x": 1350,
-          "y": 1089,
+          "x": 1132,
+          "y": 958,
           "type": "tap",
           "target_state": "主頁"
         }
@@ -66,12 +66,12 @@
     {
       "name": "主頁_生日劇情",
       "description": "直接取消即可",
-      "image_path": "markers_images/Priconne/05_主頁_生日劇情_14.png",
+      "image_path": "",
       "markers": [
         {
           "name": "取消",
-          "x": 1101,
-          "y": 1055,
+          "x": 904,
+          "y": 942,
           "type": "tap",
           "target_state": "主頁"
         }
@@ -80,90 +80,90 @@
     {
       "name": "主頁",
       "description": "主畫面，中央有角色立繪，底部有導覽列",
-      "image_path": "markers_images/Priconne/06_主頁_14.png",
+      "image_path": "markers_images/06_主頁_3.png",
       "markers": [
         {
           "name": "冒險",
-          "x": 1475,
-          "y": 1131,
+          "x": 1245,
+          "y": 1029,
           "type": "tap",
           "target_state": "冒險"
         },
         {
           "name": "劇情",
-          "x": 1216,
-          "y": 1128,
+          "x": 992,
+          "y": 1036,
           "type": "tap"
         },
         {
           "name": "強化",
-          "x": 954,
-          "y": 1137,
+          "x": 779,
+          "y": 1026,
           "type": "tap",
           "target_state": "公主騎士強化_屬性等級"
         },
         {
           "name": "角色",
-          "x": 701,
-          "y": 1131,
+          "x": 601,
+          "y": 1031,
           "type": "tap",
           "target_state": "角色"
         },
         {
           "name": "公會小屋",
-          "x": 1751,
-          "y": 1131,
+          "x": 1461,
+          "y": 1039,
           "type": "tap"
         },
         {
           "name": "轉蛋",
-          "x": 2006,
-          "y": 1131,
+          "x": 1694,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "選單",
-          "x": 2249,
-          "y": 1131,
+          "x": 1933,
+          "y": 1022,
           "type": "tap"
         },
         {
           "name": "禮物",
-          "x": 2449,
-          "y": 964,
+          "x": 2129,
+          "y": 870,
           "type": "tap",
           "target_state": "主頁_禮物BOX"
         },
         {
           "name": "任務",
-          "x": 2285,
-          "y": 954,
+          "x": 1987,
+          "y": 860,
           "type": "tap",
           "target_state": "任務"
         },
         {
           "name": "行程表",
-          "x": 2115,
-          "y": 944,
+          "x": 1835,
+          "y": 854,
           "type": "tap",
           "target_state": "行程表"
         },
         {
           "name": "商店",
-          "x": 1954,
-          "y": 947,
+          "x": 1694,
+          "y": 860,
           "type": "tap"
         },
         {
           "name": "究級鍊成",
-          "x": 1777,
-          "y": 957,
+          "x": 1549,
+          "y": 864,
           "type": "tap"
         },
         {
           "name": "主頁",
-          "x": 461,
-          "y": 1140,
+          "x": 327,
+          "y": 1012,
           "type": "tap"
         }
       ]
@@ -171,57 +171,57 @@
     {
       "name": "主畫面:Nav_bar",
       "description": "",
-      "image_path": "markers_images/Priconne/07_主畫面_Nav_bar_14.png",
+      "image_path": "markers_images/07_主畫面_Nav_bar_3.png",
       "markers": [
         {
           "name": "冒險",
-          "x": 1475,
-          "y": 1131,
+          "x": 1245,
+          "y": 1029,
           "type": "tap",
           "target_state": "冒險"
         },
         {
           "name": "劇情",
-          "x": 1216,
-          "y": 1128,
+          "x": 992,
+          "y": 1036,
           "type": "tap"
         },
         {
           "name": "強化",
-          "x": 954,
-          "y": 1137,
+          "x": 779,
+          "y": 1026,
           "type": "tap",
           "target_state": "公主騎士強化_屬性等級"
         },
         {
           "name": "角色",
-          "x": 701,
-          "y": 1131,
+          "x": 601,
+          "y": 1031,
           "type": "tap",
           "target_state": "角色"
         },
         {
           "name": "公會小屋",
-          "x": 1751,
-          "y": 1131,
+          "x": 1461,
+          "y": 1039,
           "type": "tap"
         },
         {
           "name": "轉蛋",
-          "x": 2006,
-          "y": 1131,
+          "x": 1694,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "選單",
-          "x": 2249,
-          "y": 1131,
+          "x": 1933,
+          "y": 1022,
           "type": "tap"
         },
         {
           "name": "主頁",
-          "x": 459,
-          "y": 1140,
+          "x": 327,
+          "y": 1012,
           "type": "tap",
           "target_state": "主頁"
         }
@@ -230,129 +230,129 @@
     {
       "name": "冒險",
       "description": "側邊小按鈕主要是每個時期會有不同的活動，實際得依相對位置判斷，1是最右邊的依序向左",
-      "image_path": "markers_images/Priconne/08_冒險_12.png",
+      "image_path": "markers_images/08_冒險_3.png",
       "markers": [
         {
           "name": "冒險",
-          "x": 1475,
-          "y": 1131,
+          "x": 1245,
+          "y": 1029,
           "type": "tap",
           "target_state": "冒險"
         },
         {
           "name": "劇情",
-          "x": 1216,
-          "y": 1128,
+          "x": 992,
+          "y": 1036,
           "type": "tap"
         },
         {
           "name": "強化",
-          "x": 954,
-          "y": 1137,
+          "x": 779,
+          "y": 1026,
           "type": "tap",
           "target_state": "公主騎士強化_屬性等級"
         },
         {
           "name": "角色",
-          "x": 701,
-          "y": 1131,
+          "x": 601,
+          "y": 1031,
           "type": "tap",
           "target_state": "角色"
         },
         {
           "name": "公會小屋",
-          "x": 1751,
-          "y": 1131,
+          "x": 1461,
+          "y": 1039,
           "type": "tap"
         },
         {
           "name": "轉蛋",
-          "x": 2006,
-          "y": 1131,
+          "x": 1694,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "選單",
-          "x": 2249,
-          "y": 1131,
+          "x": 1933,
+          "y": 1022,
           "type": "tap"
         },
         {
           "name": "主線冒險",
-          "x": 1660,
-          "y": 340,
+          "x": 1441,
+          "y": 348,
           "type": "tap"
         },
         {
           "name": "額外冒險",
-          "x": 2046,
-          "y": 283,
+          "x": 1778,
+          "y": 304,
           "type": "tap"
         },
         {
           "name": "追憶之戰域",
-          "x": 2360,
-          "y": 306,
+          "x": 2048,
+          "y": 304,
           "type": "tap"
         },
         {
           "name": "戰隊競賽",
-          "x": 2356,
-          "y": 616,
+          "x": 2072,
+          "y": 547,
           "type": "tap"
         },
         {
           "name": "深域冒險",
-          "x": 2034,
-          "y": 620,
+          "x": 1778,
+          "y": 574,
           "type": "tap"
         },
         {
           "name": "探險",
-          "x": 1641,
-          "y": 654,
+          "x": 1414,
+          "y": 580,
           "type": "tap"
         },
         {
           "name": "戰鬥競技場",
-          "x": 1645,
-          "y": 904,
+          "x": 1393,
+          "y": 793,
           "type": "tap"
         },
         {
           "name": "公主競技場",
-          "x": 1963,
-          "y": 896,
+          "x": 1697,
+          "y": 800,
           "type": "tap"
         },
         {
           "name": "黎明界迷宮",
-          "x": 2348,
-          "y": 888,
+          "x": 2055,
+          "y": 796,
           "type": "tap"
         },
         {
           "name": "側邊小按鈕1",
-          "x": 1320,
-          "y": 915,
+          "x": 1134,
+          "y": 837,
           "type": "tap"
         },
         {
           "name": "側邊小按鈕2",
-          "x": 1123,
-          "y": 911,
+          "x": 989,
+          "y": 830,
           "type": "tap"
         },
         {
           "name": "側邊小按鈕3",
-          "x": 919,
-          "y": 922,
+          "x": 850,
+          "y": 823,
           "type": "tap"
         },
         {
           "name": "主頁",
-          "x": 445,
-          "y": 1154,
+          "x": 327,
+          "y": 1012,
           "type": "tap",
           "target_state": "主頁"
         }
@@ -361,111 +361,111 @@
     {
       "name": "角色",
       "description": "",
-      "image_path": "markers_images/Priconne/09_角色_12.png",
+      "image_path": "markers_images/09_角色_2.png",
       "markers": [
         {
           "name": "冒險",
-          "x": 1475,
-          "y": 1131,
+          "x": 1245,
+          "y": 1029,
           "type": "tap",
           "target_state": "冒險"
         },
         {
           "name": "劇情",
-          "x": 1216,
-          "y": 1128,
+          "x": 992,
+          "y": 1036,
           "type": "tap"
         },
         {
           "name": "強化",
-          "x": 954,
-          "y": 1137,
+          "x": 779,
+          "y": 1026,
           "type": "tap",
           "target_state": "公主騎士強化_屬性等級"
         },
         {
           "name": "角色",
-          "x": 701,
-          "y": 1131,
+          "x": 601,
+          "y": 1031,
           "type": "tap",
           "target_state": "角色"
         },
         {
           "name": "公會小屋",
-          "x": 1751,
-          "y": 1131,
+          "x": 1461,
+          "y": 1039,
           "type": "tap"
         },
         {
           "name": "轉蛋",
-          "x": 2006,
-          "y": 1131,
+          "x": 1694,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "選單",
-          "x": 2249,
-          "y": 1131,
+          "x": 1933,
+          "y": 1022,
           "type": "tap"
         },
         {
           "name": "角色1",
-          "x": 658,
-          "y": 306,
+          "x": 489,
+          "y": 302,
           "type": "tap"
         },
         {
           "name": "角色2",
-          "x": 1327,
-          "y": 295,
+          "x": 1114,
+          "y": 293,
           "type": "tap"
         },
         {
           "name": "角色3",
-          "x": 2016,
-          "y": 310,
+          "x": 1700,
+          "y": 290,
           "type": "tap"
         },
         {
           "name": "角色4",
-          "x": 654,
-          "y": 650,
+          "x": 554,
+          "y": 550,
           "type": "tap"
         },
         {
           "name": "角色5",
-          "x": 1357,
-          "y": 620,
+          "x": 1092,
+          "y": 583,
           "type": "tap"
         },
         {
           "name": "角色6",
-          "x": 2012,
-          "y": 646,
+          "x": 1697,
+          "y": 585,
           "type": "tap"
         },
         {
           "name": "角色7",
-          "x": 680,
-          "y": 930,
+          "x": 580,
+          "y": 830,
           "type": "tap"
         },
         {
           "name": "角色8",
-          "x": 1369,
-          "y": 938,
+          "x": 1108,
+          "y": 842,
           "type": "tap"
         },
         {
           "name": "角色9",
-          "x": 2023,
-          "y": 926,
+          "x": 1668,
+          "y": 820,
           "type": "tap"
         },
         {
           "name": "全部強化",
-          "x": 2239,
-          "y": 915,
+          "x": 1901,
+          "y": 824,
           "type": "tap"
         },
         {
@@ -478,8 +478,8 @@
         },
         {
           "name": "主頁",
-          "x": 436,
-          "y": 1154,
+          "x": 327,
+          "y": 1012,
           "type": "tap",
           "target_state": "主頁"
         }
@@ -488,91 +488,91 @@
     {
       "name": "公主騎士強化_屬性等級",
       "description": "",
-      "image_path": "markers_images/Priconne/10_公主騎士強化_屬性等級_9.png",
+      "image_path": "markers_images/10_公主騎士強化_屬性等級_2.png",
       "markers": [
         {
           "name": "冒險",
-          "x": 1475,
-          "y": 1131,
+          "x": 1245,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "劇情",
-          "x": 1216,
-          "y": 1128,
+          "x": 992,
+          "y": 1036,
           "type": "tap"
         },
         {
           "name": "強化",
-          "x": 954,
-          "y": 1137,
+          "x": 779,
+          "y": 1026,
           "type": "tap"
         },
         {
           "name": "角色",
-          "x": 701,
-          "y": 1131,
+          "x": 601,
+          "y": 1031,
           "type": "tap"
         },
         {
           "name": "公會小屋",
-          "x": 1751,
-          "y": 1131,
+          "x": 1461,
+          "y": 1039,
           "type": "tap"
         },
         {
           "name": "轉蛋",
-          "x": 2006,
-          "y": 1131,
+          "x": 1694,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "選單",
-          "x": 2249,
-          "y": 1131,
+          "x": 1933,
+          "y": 1022,
           "type": "tap"
         },
         {
           "name": "屬性等級",
-          "x": 1122,
-          "y": 155,
+          "x": 920,
+          "y": 127,
           "type": "tap"
         },
         {
           "name": "主頁",
-          "x": 463,
-          "y": 1152,
+          "x": 327,
+          "y": 1012,
           "type": "tap"
         },
         {
           "name": "屬性技能",
-          "x": 1482,
-          "y": 165,
+          "x": 1251,
+          "y": 141,
           "type": "tap",
           "target_state": "公主騎士強化_屬性技能"
         },
         {
           "name": "大師技能",
-          "x": 1823,
-          "y": 157,
+          "x": 1550,
+          "y": 138,
           "type": "tap"
         },
         {
           "name": "職階專精",
-          "x": 2170,
-          "y": 163,
+          "x": 1849,
+          "y": 143,
           "type": "tap"
         },
         {
           "name": "任務",
-          "x": 2200,
+          "x": 1898,
           "y": 67,
           "type": "tap"
         },
         {
           "name": "全部強化",
-          "x": 2115,
-          "y": 979,
+          "x": 1807,
+          "y": 878,
           "type": "tap"
         }
       ]
@@ -580,92 +580,92 @@
     {
       "name": "公主騎士強化_屬性技能",
       "description": "",
-      "image_path": "markers_images/Priconne/11_公主騎士強化_屬性技能_8.png",
+      "image_path": "markers_images/11_公主騎士強化_屬性技能_2.png",
       "markers": [
         {
           "name": "冒險",
-          "x": 1475,
-          "y": 1131,
+          "x": 1245,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "劇情",
-          "x": 1216,
-          "y": 1128,
+          "x": 992,
+          "y": 1036,
           "type": "tap"
         },
         {
           "name": "強化",
-          "x": 954,
-          "y": 1137,
+          "x": 779,
+          "y": 1026,
           "type": "tap"
         },
         {
           "name": "角色",
-          "x": 701,
-          "y": 1131,
+          "x": 601,
+          "y": 1031,
           "type": "tap"
         },
         {
           "name": "公會小屋",
-          "x": 1751,
-          "y": 1131,
+          "x": 1461,
+          "y": 1039,
           "type": "tap"
         },
         {
           "name": "轉蛋",
-          "x": 2006,
-          "y": 1131,
+          "x": 1694,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "選單",
-          "x": 2249,
-          "y": 1131,
+          "x": 1933,
+          "y": 1022,
           "type": "tap"
         },
         {
           "name": "屬性等級",
-          "x": 1122,
-          "y": 155,
+          "x": 920,
+          "y": 127,
           "type": "tap",
           "target_state": "公主騎士強化_屬性等級"
         },
         {
           "name": "主頁",
-          "x": 463,
-          "y": 1152,
+          "x": 327,
+          "y": 1012,
           "type": "tap",
           "target_state": "主頁"
         },
         {
           "name": "屬性技能",
-          "x": 1482,
-          "y": 165,
+          "x": 1251,
+          "y": 141,
           "type": "tap"
         },
         {
           "name": "大師技能",
-          "x": 1823,
-          "y": 157,
+          "x": 1550,
+          "y": 138,
           "type": "tap"
         },
         {
           "name": "職階專精",
-          "x": 2170,
-          "y": 163,
+          "x": 1849,
+          "y": 143,
           "type": "tap"
         },
         {
           "name": "任務",
-          "x": 2200,
+          "x": 1898,
           "y": 67,
           "type": "tap"
         },
         {
           "name": "全部強化",
-          "x": 1992,
-          "y": 962,
+          "x": 1666,
+          "y": 860,
           "type": "tap",
           "target_state": "公主騎士強化_屬性技能_強化確認"
         }
@@ -674,19 +674,19 @@
     {
       "name": "公主騎士強化_屬性技能_強化確認",
       "description": "",
-      "image_path": "markers_images/Priconne/12_公主騎士強化_屬性技能_強化確認_8.png",
+      "image_path": "markers_images/12_公主騎士強化_屬性技能_強化確認_2.png",
       "markers": [
         {
           "name": "取消",
-          "x": 1097,
-          "y": 1091,
+          "x": 900,
+          "y": 942,
           "type": "tap",
           "target_state": "公主騎士強化_屬性技能"
         },
         {
           "name": "OK",
-          "x": 1609,
-          "y": 1085,
+          "x": 1329,
+          "y": 960,
           "type": "tap"
         }
       ]
@@ -694,25 +694,25 @@
     {
       "name": "主頁_禮物BOX",
       "description": "要領體力的話(基本上都要)，非領取對象預設為開，所以要先關掉",
-      "image_path": "markers_images/Priconne/13_主頁_禮物BOX_8.png",
+      "image_path": "markers_images/13_主頁_禮物BOX_2.png",
       "markers": [
         {
           "name": "全部領取",
-          "x": 2100,
-          "y": 1068,
+          "x": 1744,
+          "y": 954,
           "type": "tap",
           "target_state": "主頁_禮物BOX_領取禮物"
         },
         {
           "name": "體力非領取對象_Checkbox",
-          "x": 1089,
-          "y": 1069,
+          "x": 875,
+          "y": 949,
           "type": "tap"
         },
         {
           "name": "取消",
-          "x": 1601,
-          "y": 1060,
+          "x": 1367,
+          "y": 947,
           "type": "tap",
           "target_state": "主頁"
         }
@@ -721,19 +721,19 @@
     {
       "name": "主頁_禮物BOX_領取禮物",
       "description": "",
-      "image_path": "markers_images/Priconne/14_主頁_禮物BOX_領取禮物_8.png",
+      "image_path": "markers_images/14_主頁_禮物BOX_領取禮物_2.png",
       "markers": [
         {
           "name": "取消",
-          "x": 1085,
-          "y": 1068,
+          "x": 905,
+          "y": 940,
           "type": "tap",
           "target_state": "主頁_禮物BOX"
         },
         {
           "name": "OK",
-          "x": 1609,
-          "y": 1079,
+          "x": 1362,
+          "y": 938,
           "type": "tap",
           "target_state": "主頁_禮物BOX_領取禮物_完成"
         }
@@ -742,12 +742,12 @@
     {
       "name": "主頁_禮物BOX_領取禮物_完成",
       "description": "",
-      "image_path": "markers_images/Priconne/15_主頁_禮物BOX_領取禮物_完成_8.png",
+      "image_path": "markers_images/15_主頁_禮物BOX_領取禮物_完成_2.png",
       "markers": [
         {
           "name": "OK",
-          "x": 1354,
-          "y": 1069,
+          "x": 1112,
+          "y": 951,
           "type": "tap"
         }
       ]
@@ -755,83 +755,83 @@
     {
       "name": "任務",
       "description": "",
-      "image_path": "markers_images/Priconne/16_任務_7.png",
+      "image_path": "markers_images/16_任務_2.png",
       "markers": [
         {
           "name": "冒險",
-          "x": 1475,
-          "y": 1131,
+          "x": 1245,
+          "y": 1029,
           "type": "tap",
           "target_state": "冒險"
         },
         {
           "name": "劇情",
-          "x": 1216,
-          "y": 1128,
+          "x": 992,
+          "y": 1036,
           "type": "tap"
         },
         {
           "name": "強化",
-          "x": 954,
-          "y": 1137,
+          "x": 779,
+          "y": 1026,
           "type": "tap",
           "target_state": "公主騎士強化_屬性等級"
         },
         {
           "name": "角色",
-          "x": 701,
-          "y": 1131,
+          "x": 601,
+          "y": 1031,
           "type": "tap",
           "target_state": "角色"
         },
         {
           "name": "公會小屋",
-          "x": 1751,
-          "y": 1131,
+          "x": 1461,
+          "y": 1039,
           "type": "tap"
         },
         {
           "name": "轉蛋",
-          "x": 2006,
-          "y": 1131,
+          "x": 1694,
+          "y": 1029,
           "type": "tap"
         },
         {
           "name": "選單",
-          "x": 2249,
-          "y": 1131,
+          "x": 1933,
+          "y": 1022,
           "type": "tap"
         },
         {
           "name": "主頁",
-          "x": 459,
-          "y": 1140,
+          "x": 327,
+          "y": 1012,
           "type": "tap",
           "target_state": "主頁"
         },
         {
           "name": "全部領取",
-          "x": 2270,
-          "y": 979,
+          "x": 1983,
+          "y": 887,
           "type": "tap",
           "target_state": "任務_領取獎勵"
         },
         {
           "name": "每日",
-          "x": 1274,
-          "y": 57,
+          "x": 1072,
+          "y": 47,
           "type": "tap"
         },
         {
           "name": "普通",
-          "x": 1635,
-          "y": 59,
+          "x": 1416,
+          "y": 47,
           "type": "tap"
         },
         {
           "name": "稱號",
-          "x": 1984,
-          "y": 51,
+          "x": 1726,
+          "y": 47,
           "type": "tap"
         },
         {
@@ -845,12 +845,12 @@
     {
       "name": "任務_領取獎勵",
       "description": "",
-      "image_path": "markers_images/Priconne/17_任務_領取獎勵_7.png",
+      "image_path": "markers_images/17_任務_領取獎勵_2.png",
       "markers": [
         {
           "name": "關閉",
-          "x": 1358,
-          "y": 1069,
+          "x": 1110,
+          "y": 956,
           "type": "tap",
           "target_state": "任務"
         }
@@ -859,19 +859,19 @@
     {
       "name": "行程表",
       "description": "行程表基本上就是見招拆招",
-      "image_path": "markers_images/Priconne/18_行程表_7.png",
+      "image_path": "markers_images/18_行程表_2.png",
       "markers": [
         {
           "name": "關閉",
-          "x": 918,
-          "y": 1073,
+          "x": 719,
+          "y": 947,
           "type": "tap",
           "target_state": "主頁"
         },
         {
           "name": "全部執行",
-          "x": 1743,
-          "y": 1077,
+          "x": 1490,
+          "y": 967,
           "type": "tap",
           "target_state": "購買瑪那_購買確認"
         }
@@ -880,19 +880,19 @@
     {
       "name": "購買瑪那_購買確認",
       "description": "",
-      "image_path": "markers_images/Priconne/19_購買瑪那_購買確認_7.png",
+      "image_path": "markers_images/19_購買瑪那_購買確認_2.png",
       "markers": [
         {
           "name": "取消",
-          "x": 1097,
-          "y": 836,
+          "x": 905,
+          "y": 741,
           "type": "tap",
           "target_state": "購買瑪那"
         },
         {
           "name": "OK",
-          "x": 1605,
-          "y": 838,
+          "x": 1362,
+          "y": 741,
           "type": "tap",
           "target_state": "購買瑪那"
         }
@@ -901,12 +901,12 @@
     {
       "name": "購買瑪那",
       "description": "",
-      "image_path": "markers_images/Priconne/20_購買瑪那_7.png",
+      "image_path": "markers_images/20_購買瑪那_2.png",
       "markers": [
         {
           "name": "OK",
-          "x": 1393,
-          "y": 1075,
+          "x": 1076,
+          "y": 958,
           "type": "tap",
           "target_state": "經驗值/瑪那冒險掃蕩確認"
         }
@@ -915,18 +915,18 @@
     {
       "name": "經驗值/瑪那冒險掃蕩確認",
       "description": "瑪那和經驗值在掃蕩時會各有一輪",
-      "image_path": "markers_images/Priconne/21_經驗值_瑪那冒險掃蕩確認_7.png",
+      "image_path": "markers_images/21_經驗值_瑪那冒險掃蕩確認_2.png",
       "markers": [
         {
           "name": "取消",
-          "x": 1121,
-          "y": 828,
+          "x": 902,
+          "y": 737,
           "type": "tap"
         },
         {
           "name": "OK",
-          "x": 1619,
-          "y": 832,
+          "x": 1329,
+          "y": 739,
           "type": "tap",
           "target_state": "行程表經驗值/瑪那冒險掃蕩結果"
         }
@@ -935,12 +935,12 @@
     {
       "name": "行程表經驗值/瑪那冒險掃蕩結果",
       "description": "確定掃蕩完成再OK",
-      "image_path": "markers_images/Priconne/22_行程表經驗值_瑪那冒險掃蕩結果_7.png",
+      "image_path": "markers_images/22_行程表經驗值_瑪那冒險掃蕩結果_2.png",
       "markers": [
         {
           "name": "OK",
-          "x": 1342,
-          "y": 1077,
+          "x": 1112,
+          "y": 951,
           "type": "tap"
         }
       ]
@@ -948,12 +948,12 @@
     {
       "name": "行程表_已點讚",
       "description": "",
-      "image_path": "markers_images/Priconne/23_行程表_已點讚_7.png",
+      "image_path": "markers_images/23_行程表_已點讚_2.png",
       "markers": [
         {
           "name": "OK",
-          "x": 1352,
-          "y": 828,
+          "x": 1110,
+          "y": 735,
           "type": "tap",
           "target_state": "行程表_領取獎勵"
         }
@@ -962,14 +962,27 @@
     {
       "name": "行程表_領取獎勵",
       "description": "",
-      "image_path": "markers_images/Priconne/24_行程表_領取獎勵_7.png",
+      "image_path": "",
       "markers": [
         {
           "name": "關閉",
-          "x": 1338,
-          "y": 1081,
+          "x": 1111,
+          "y": 953,
           "type": "tap",
           "target_state": "行程表"
+        }
+      ]
+    },
+    {
+      "name": "簽到",
+      "description": "直接跳過",
+      "image_path": "markers_images/25_簽到.png",
+      "markers": [
+        {
+          "name": "skip",
+          "x": 2132,
+          "y": 57,
+          "type": "tap"
         }
       ]
     }

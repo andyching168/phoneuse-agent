@@ -7,7 +7,7 @@
     {
       "name": "首頁_資料下載",
       "description": "",
-      "image_path": "markers_images/01_首頁_資料下載.png",
+      "image_path": "markers_images/01_首頁_資料下載_2.png",
       "markers": [
         {
           "name": "OK",
@@ -52,7 +52,7 @@
     {
       "name": "主頁_公告",
       "description": "直接關閉即可",
-      "image_path": "markers_images/04_主頁_公告.png",
+      "image_path": "markers_images/04_主頁_公告_2.png",
       "markers": [
         {
           "name": "關閉",
@@ -80,7 +80,7 @@
     {
       "name": "主頁",
       "description": "主畫面，中央有角色立繪，底部有導覽列",
-      "image_path": "markers_images/06_主頁_1.png",
+      "image_path": "markers_images/06_主頁_3.png",
       "markers": [
         {
           "name": "冒險",
@@ -171,7 +171,7 @@
     {
       "name": "主畫面:Nav_bar",
       "description": "",
-      "image_path": "markers_images/07_主畫面_Nav_bar_1.png",
+      "image_path": "markers_images/07_主畫面_Nav_bar_3.png",
       "markers": [
         {
           "name": "冒險",
@@ -230,7 +230,7 @@
     {
       "name": "冒險",
       "description": "側邊小按鈕主要是每個時期會有不同的活動，實際得依相對位置判斷，1是最右邊的依序向左",
-      "image_path": "markers_images/08_冒險_1.png",
+      "image_path": "markers_images/08_冒險_3.png",
       "markers": [
         {
           "name": "冒險",
@@ -361,7 +361,7 @@
     {
       "name": "角色",
       "description": "",
-      "image_path": "markers_images/09_角色.png",
+      "image_path": "markers_images/09_角色_2.png",
       "markers": [
         {
           "name": "冒險",
@@ -488,7 +488,7 @@
     {
       "name": "公主騎士強化_屬性等級",
       "description": "",
-      "image_path": "markers_images/10_公主騎士強化_屬性等級.png",
+      "image_path": "markers_images/10_公主騎士強化_屬性等級_2.png",
       "markers": [
         {
           "name": "冒險",
@@ -580,7 +580,7 @@
     {
       "name": "公主騎士強化_屬性技能",
       "description": "",
-      "image_path": "markers_images/11_公主騎士強化_屬性技能.png",
+      "image_path": "markers_images/11_公主騎士強化_屬性技能_2.png",
       "markers": [
         {
           "name": "冒險",
@@ -674,7 +674,7 @@
     {
       "name": "公主騎士強化_屬性技能_強化確認",
       "description": "",
-      "image_path": "markers_images/12_公主騎士強化_屬性技能_強化確認.png",
+      "image_path": "markers_images/12_公主騎士強化_屬性技能_強化確認_2.png",
       "markers": [
         {
           "name": "取消",
@@ -694,7 +694,7 @@
     {
       "name": "主頁_禮物BOX",
       "description": "要領體力的話(基本上都要)，非領取對象預設為開，所以要先關掉",
-      "image_path": "markers_images/13_主頁_禮物BOX.png",
+      "image_path": "markers_images/13_主頁_禮物BOX_2.png",
       "markers": [
         {
           "name": "全部領取",
@@ -721,7 +721,7 @@
     {
       "name": "主頁_禮物BOX_領取禮物",
       "description": "",
-      "image_path": "markers_images/14_主頁_禮物BOX_領取禮物.png",
+      "image_path": "markers_images/14_主頁_禮物BOX_領取禮物_2.png",
       "markers": [
         {
           "name": "取消",
@@ -742,7 +742,7 @@
     {
       "name": "主頁_禮物BOX_領取禮物_完成",
       "description": "",
-      "image_path": "markers_images/15_主頁_禮物BOX_領取禮物_完成.png",
+      "image_path": "markers_images/15_主頁_禮物BOX_領取禮物_完成_2.png",
       "markers": [
         {
           "name": "OK",
@@ -755,7 +755,7 @@
     {
       "name": "任務",
       "description": "",
-      "image_path": "markers_images/16_任務.png",
+      "image_path": "markers_images/16_任務_2.png",
       "markers": [
         {
           "name": "冒險",
@@ -845,7 +845,7 @@
     {
       "name": "任務_領取獎勵",
       "description": "",
-      "image_path": "markers_images/17_任務_領取獎勵.png",
+      "image_path": "markers_images/17_任務_領取獎勵_2.png",
       "markers": [
         {
           "name": "關閉",
@@ -859,7 +859,7 @@
     {
       "name": "行程表",
       "description": "行程表基本上就是見招拆招",
-      "image_path": "markers_images/18_行程表.png",
+      "image_path": "markers_images/18_行程表_2.png",
       "markers": [
         {
           "name": "關閉",
@@ -880,7 +880,7 @@
     {
       "name": "購買瑪那_購買確認",
       "description": "",
-      "image_path": "markers_images/19_購買瑪那_購買確認.png",
+      "image_path": "markers_images/19_購買瑪那_購買確認_2.png",
       "markers": [
         {
           "name": "取消",
@@ -901,7 +901,7 @@
     {
       "name": "購買瑪那",
       "description": "",
-      "image_path": "markers_images/20_購買瑪那.png",
+      "image_path": "markers_images/20_購買瑪那_2.png",
       "markers": [
         {
           "name": "OK",
@@ -915,7 +915,7 @@
     {
       "name": "經驗值/瑪那冒險掃蕩確認",
       "description": "瑪那和經驗值在掃蕩時會各有一輪",
-      "image_path": "markers_images/21_經驗值_瑪那冒險掃蕩確認.png",
+      "image_path": "markers_images/21_經驗值_瑪那冒險掃蕩確認_2.png",
       "markers": [
         {
           "name": "取消",
@@ -935,7 +935,7 @@
     {
       "name": "行程表經驗值/瑪那冒險掃蕩結果",
       "description": "確定掃蕩完成再OK",
-      "image_path": "markers_images/22_行程表經驗值_瑪那冒險掃蕩結果.png",
+      "image_path": "markers_images/22_行程表經驗值_瑪那冒險掃蕩結果_2.png",
       "markers": [
         {
           "name": "OK",
@@ -948,7 +948,7 @@
     {
       "name": "行程表_已點讚",
       "description": "",
-      "image_path": "markers_images/23_行程表_已點讚.png",
+      "image_path": "markers_images/23_行程表_已點讚_2.png",
       "markers": [
         {
           "name": "OK",
@@ -970,6 +970,19 @@
           "y": 953,
           "type": "tap",
           "target_state": "行程表"
+        }
+      ]
+    },
+    {
+      "name": "簽到",
+      "description": "直接跳過",
+      "image_path": "markers_images/25_簽到.png",
+      "markers": [
+        {
+          "name": "skip",
+          "x": 2132,
+          "y": 57,
+          "type": "tap"
         }
       ]
     }
