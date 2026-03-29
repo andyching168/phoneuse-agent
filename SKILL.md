@@ -1,7 +1,7 @@
 ```skill
 ---
 name: phone-use
-description: Control Android phone via ADB/uiautomator2 and drive flow with shopee.json state machine.
+description: 控制 Android 手機進行自動化操作。適用於網購（如蝦皮）、遊戲自動化、一般 App 操作。當騎士君需要操作手機、完成手動任務、或需要瀏覽手機畫面時使用。
 ---
 
 # Phone Use Skill
